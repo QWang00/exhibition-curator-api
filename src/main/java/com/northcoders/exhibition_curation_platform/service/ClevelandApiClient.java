@@ -18,6 +18,35 @@ public class ClevelandApiClient {
     @Autowired
     private RestTemplate restTemplate;
 
+    public List<Artwork> fetchArtworkList(String query, int limit, int skip, String artist) {
+        StringBuilder urlBuilder = new StringBuilder(
+                BASE_URL +
+                        "/artworks/?has_image=1" +
+                        "&q=" + query +
+                        "&skip=" + skip +
+                        "&limit=" + limit +
+                        "&fields=tombstone,images");
+        if (!artist.isEmpty()) {
+            urlBuilder.append("&artists=").append(artist);
+        }
+
+        Map <String, Object> response = restTemplate.getForObject(urlBuilder.toString(), Map.class);
+
+        // Check if response is null or doesn't contain "data"
+        if (response == null || !response.containsKey("data")) {
+            return Collections.emptyList();
+        }
+
+        // Get "data" field and check if it's empty
+        List<Map<String, Object>> artworksData = (List<Map<String, Object>>) response.get("data");
+        if (artworksData == null || artworksData.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        return artworksData.stream()
+                .map(this::mapToArtwork)
+                .collect(Collectors.toList());
+    }
 
 
     private Artwork mapToArtwork(Map<String, Object> response) {
