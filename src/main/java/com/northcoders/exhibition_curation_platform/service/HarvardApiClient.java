@@ -18,7 +18,6 @@ public class HarvardApiClient {
     @Autowired
     private RestTemplate restTemplate;
 
-    // Fetch list of artworks (search results)
     public List<Artwork> fetchArtworkList (String query, String artist, int size, int page){
         String url = BASE_URL +
                 "?fields=title,people,dataend,primaryimageurl"  +
@@ -51,16 +50,30 @@ public class HarvardApiClient {
 
     }
 
-    // Fetch artwork detail
     public Artwork fetchArtworkDetail (Long id, Artwork existingArtwork){
         String url = BASE_URL +
                 "/" + id +
                 "?apikey=" + ApiKeyManager.getHAMApiKey();
         Map <String, Object> response = restTemplate.getForObject(url, Map.class);
-        Map<String, Object> artworkData = (Map<String, Object>) response.get("data");
-        existingArtwork.setDescription((String)((List<Map<String, Object>>) artworkData.get("images")).get(0).get("description"));
+
+        if (response == null ) {
+            return existingArtwork;
+        }
+
+        List<Map<String, Object>> images = (List<Map<String, Object>>) response.get("images");
+        if (images != null && !images.isEmpty()) {
+            for (Map<String, Object> image : images) {
+                String description = (String) image.get("description");
+                if (description != null) {
+                    existingArtwork.setDescription(description);
+                    return existingArtwork;
+                }
+            }
+        }
+
         return existingArtwork;
     }
+
     private Artwork mapToArtworkList(Map<String, Object> response) {
         Artwork artwork = new Artwork();
         artwork.setTombstone((String) response.get("title"));
