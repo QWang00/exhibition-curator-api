@@ -36,7 +36,7 @@ public class Artwork {
     private String title;
     private String yearMade;
     private String artist;
-    private String artistPlace;
+    private String culture;
     private String artistActiveYear;
 
     @Lob
