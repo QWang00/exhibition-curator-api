@@ -18,6 +18,28 @@ public class HarvardApiClient {
     @Autowired
     private RestTemplate restTemplate;
 
+    // Fetch list of artworks (search results)
+    public List<Artwork> fetchArtworkList (String query, String artist, int size, int page){
+        String url = BASE_URL +
+                "?fields=title,people,dataend,primaryimageurl"  +
+                "&q=" + query +
+                "&person=" + artist +
+                "&size=" + size +
+                "&page=" + page +
+                "&hasimage=1" +
+                "&apikey=" + ApiKeyManager.getHAMApiKey();
+        Map<String, Object> response = restTemplate.getForObject(url, Map.class);
+        List<Map<String, Object>> artworksData = (List<Map<String, Object>>) response.get("data");
+
+        return artworksData.stream()
+                .filter(artworkData -> {
+                    Integer imageLevel = (Integer) artworkData.get("imagepermissionlevel");
+                    return imageLevel != 2;
+                })
+                .map(this::mapToArtworkList)
+                .collect(Collectors.toList());
+
+    }
 
     private Artwork mapToArtworkList(Map<String, Object> response) {
         Artwork artwork = new Artwork();
