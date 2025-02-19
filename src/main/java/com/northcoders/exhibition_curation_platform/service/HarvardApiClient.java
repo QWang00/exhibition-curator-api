@@ -45,7 +45,7 @@ public class HarvardApiClient {
                     Integer imageLevel = (Integer) artworkData.get("imagepermissionlevel");
                     return imageLevel != 2;
                 })
-                .map(this::mapToArtworkList)
+                .map(this::mapToArtwork)
                 .collect(Collectors.toList());
 
     }
@@ -74,7 +74,7 @@ public class HarvardApiClient {
         return existingArtwork;
     }
 
-    private Artwork mapToArtworkList(Map<String, Object> response) {
+    private Artwork mapToArtwork(Map<String, Object> response) {
         Artwork artwork = new Artwork();
         artwork.setTombstone((String) response.get("title"));
         artwork.setImageUrl((String) response.get("primaryimageurl") );
