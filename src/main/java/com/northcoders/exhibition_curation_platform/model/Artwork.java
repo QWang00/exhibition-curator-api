@@ -2,13 +2,18 @@ package com.northcoders.exhibition_curation_platform.model;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import jakarta.persistence.*;
+import lombok.Setter;
+
 import java.util.List;
 
 
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
 @Entity
 
 public class Artwork {
