@@ -5,7 +5,7 @@ import com.northcoders.exhibition_curation_platform.model.Artwork;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -29,7 +29,17 @@ public class HarvardApiClient {
                 "&hasimage=1" +
                 "&apikey=" + ApiKeyManager.getHAMApiKey();
         Map<String, Object> response = restTemplate.getForObject(url, Map.class);
-        List<Map<String, Object>> artworksData = (List<Map<String, Object>>) response.get("data");
+
+        // Check if response is null or doesn't contain "data"
+        if (response == null || !response.containsKey("records")) {
+            return Collections.emptyList();
+        }
+
+        // Get "data" field and check if it's empty
+        List<Map<String, Object>> artworksData = (List<Map<String, Object>>) response.get("records");
+        if (artworksData == null || artworksData.isEmpty()) {
+            return Collections.emptyList();
+        }
 
         return artworksData.stream()
                 .filter(artworkData -> {
