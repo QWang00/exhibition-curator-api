@@ -41,6 +41,16 @@ public class HarvardApiClient {
 
     }
 
+    // Fetch artwork detail
+    public Artwork fetchArtworkDetail (Long id, Artwork existingArtwork){
+        String url = BASE_URL +
+                "/" + id +
+                "?apikey=" + ApiKeyManager.getHAMApiKey();
+        Map <String, Object> response = restTemplate.getForObject(url, Map.class);
+        Map<String, Object> artworkData = (Map<String, Object>) response.get("data");
+        existingArtwork.setDescription((String)((List<Map<String, Object>>) artworkData.get("images")).get(0).get("description"));
+        return existingArtwork;
+    }
     private Artwork mapToArtworkList(Map<String, Object> response) {
         Artwork artwork = new Artwork();
         artwork.setTombstone((String) response.get("title"));
