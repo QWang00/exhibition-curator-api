@@ -71,6 +71,8 @@ public class HarvardApiClient {
                 if (description != null) {
                     existingArtwork.setDescription(description);
                     return existingArtwork;
+                } else {
+                    existingArtwork.setDescription("Technique: " + (String)response.get("technique"));
                 }
             }
         }
