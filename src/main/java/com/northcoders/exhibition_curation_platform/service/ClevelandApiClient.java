@@ -14,9 +14,12 @@ import java.util.stream.Collectors;
 public class ClevelandApiClient {
     private static final String BASE_URL = "https://openaccess-api.clevelandart.org/api";
     private static final String MUSEUM_NAME = "The Cleveland Museum of Art";
+    private final RestTemplate restTemplate;
 
     @Autowired
-    private RestTemplate restTemplate;
+    public ClevelandApiClient(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
 
     public List<Artwork> fetchArtworkList(String query, int limit, int skip, String artist) {
         StringBuilder urlBuilder = new StringBuilder(
