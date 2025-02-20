@@ -15,8 +15,12 @@ public class HarvardApiClient {
     private static final String BASE_URL = "https://api.harvardartmuseums.org/object";
     private static final String MUSEUM_NAME = "Harvard Art Museum";
 
+    private final RestTemplate restTemplate;
+
     @Autowired
-    private RestTemplate restTemplate;
+    public HarvardApiClient(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
 
     public List<Artwork> fetchArtworkList (String query, String artist, int size, int page){
         String url = BASE_URL +
