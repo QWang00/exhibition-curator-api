@@ -54,7 +54,7 @@ public class HarvardApiClient {
 
     }
 
-    public Artwork fetchArtworkDetail (Long id, Artwork existingArtwork){
+    public Artwork fetchArtworkDetail (int id, Artwork existingArtwork){
         String url = BASE_URL +
                 "/" + id +
                 "?apikey=" + ApiKeyManager.getHAMApiKey();
