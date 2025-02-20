@@ -24,7 +24,7 @@ public class HarvardApiClient {
 
     public List<Artwork> fetchArtworkList (String query, String artist, int size, int page){
         String url = BASE_URL +
-                "?fields=title,people,dataend,primaryimageurl"  +
+                "?fields=title,people,dated,primaryimageurl"  +
                 "&q=" + query +
                 "&person=" + artist +
                 "&size=" + size +
@@ -80,9 +80,11 @@ public class HarvardApiClient {
 
     private Artwork mapToArtwork(Map<String, Object> response) {
         Artwork artwork = new Artwork();
+
         artwork.setTombstone((String) response.get("title"));
         artwork.setImageUrl((String) response.get("primaryimageurl") );
-        artwork.setYearMade((String) response.get("dateend"));
+        artwork.setYearMade((String) response.get("dated"));
+        artwork.setSourceArtworkId((Integer)response.get("id"));
 
         List<Map<String, Object>> people = (List<Map<String, Object>>) response.get("people");
         if (people != null && !people.isEmpty()) {
