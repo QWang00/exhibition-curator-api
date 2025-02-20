@@ -47,7 +47,8 @@ public class HarvardApiClient {
         return artworksData.stream()
                 .filter(artworkData -> {
                     Integer imageLevel = (Integer) artworkData.get("imagepermissionlevel");
-                    return imageLevel != 2;
+                    String imageUrl = (String) artworkData.get("primaryimageurl");
+                    return imageLevel != 2 && imageUrl != null;
                 })
                 .map(this::mapToArtwork)
                 .collect(Collectors.toList());
