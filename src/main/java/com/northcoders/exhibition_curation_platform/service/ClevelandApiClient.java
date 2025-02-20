@@ -51,8 +51,8 @@ public class ClevelandApiClient {
                 .collect(Collectors.toList());
     }
 
-    public Artwork fetchArtworkDetail(Long id, Artwork existingArtwork) {
-        String url = BASE_URL + "artworks/" + id + "?fields=description,tombstone,images";
+    public Artwork fetchArtworkDetail(int id, Artwork existingArtwork) {
+        String url = BASE_URL + "/artworks/" + id + "?fields=description,tombstone,images";
         Map<String, Object> response = restTemplate.getForObject(url, Map.class);
 
         // Ensure response and "data" exist
@@ -74,6 +74,7 @@ public class ClevelandApiClient {
     private Artwork mapToArtwork(Map<String, Object> response) {
         Artwork artwork = new Artwork();
         artwork.setTombstone((String) response.get("tombstone"));
+        artwork.setSourceArtworkId((Integer) response.get("id"));
 
         // Extract images
         Map<String, Object> images = (Map<String, Object>) response.get("images");
