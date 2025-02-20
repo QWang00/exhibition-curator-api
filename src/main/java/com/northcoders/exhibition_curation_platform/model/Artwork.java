@@ -1,11 +1,8 @@
 package com.northcoders.exhibition_curation_platform.model;
 
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import jakarta.persistence.*;
-import lombok.Setter;
 
 import java.util.List;
 
@@ -15,15 +12,17 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-
+@Data
+@Builder
 public class Artwork {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull
     @Column(nullable = false)
-    private String description;
+    private int sourceArtworkId;
 
     @NotNull
     @Column(nullable = false)
@@ -38,6 +37,7 @@ public class Artwork {
     private String artist;
     private String culture;
     private String artistActiveYear;
+    private String description;
 
     @Lob
     private String tombstone;
