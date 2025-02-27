@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -39,7 +40,7 @@ class ArtworkServiceImplTest {
         @DisplayName("Should return an empty list when museum name not found")
         void invalidMuseum(){
             List<Artwork> actualResult = artworkService.getArtworks("keyword", "artist", "Invalid", 1);
-            assertThat(actualResult.isEmpty());
+            assertThat(actualResult).hasSize(0);
         }
 
         @Test
@@ -57,9 +58,9 @@ class ArtworkServiceImplTest {
 
             when(harvardApiClient.fetchArtworkList("keyword", "artist", 10,1)).thenReturn(artworks);
             List<Artwork> actualResult = artworkService.getArtworks("keyword", "artist", "Harvard Art Museum", 1);
-            assertThat(actualResult.size() == 1);
-            assertThat(actualResult.getFirst().getMuseumName().equals("Harvard Art Museum"));
-            assertThat(actualResult.getFirst().getCulture().equals("Germany"));
+            assertEquals(actualResult.size(), 1);
+            assertEquals(actualResult.getFirst().getMuseumName(), ("Harvard Art Museum"));
+            assertEquals(actualResult.getFirst().getCulture(), ("Germany"));
             verify(harvardApiClient).fetchArtworkList("keyword", "artist", 10, 1);
 
         }
@@ -76,8 +77,8 @@ class ArtworkServiceImplTest {
 
             when(clevelandApiClient.fetchArtworkList("keyword", 10, 0, "artist")).thenReturn(artworks);
             List<Artwork> actualResult = artworkService.getArtworks("keyword", "artist", "The Cleveland Museum of Art", 1);
-            assertThat(actualResult.size() == 1);
-            assertThat(actualResult.getFirst().getTombstone().equals("keyword tombstone, 1920, Germany, artist, 1900-1980"));
+            assertEquals(actualResult.size(), 1);
+            assertEquals(actualResult.getFirst().getTombstone(), ("keyword tombstone, 1920, Germany, artist, 1900-1980"));
             verify(clevelandApiClient).fetchArtworkList("keyword", 10, 0, "artist");
 
         }
