@@ -5,12 +5,9 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -101,6 +98,44 @@ class ArtworkServiceImplTest {
             IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
                     () -> artworkService.getArtworkDetails(artwork));
             assertThat(exception.getMessage()).isEqualTo("Invalid museum source: Harvard");
+        }
+
+        @Test
+        @DisplayName("Should return artwork details when museum is Harvard")
+        void harvardMuseum(){
+            Artwork existingArtwork = Artwork.builder()
+                    .title("title keyword")
+                    .yearMade("1920")
+                    .culture("Germany")
+                    .artist("artist")
+                    .artistActiveYear("1900-1980")
+                    .museumName("Harvard Art Museum")
+                    .sourceArtworkId(1234)
+                    .build();
+            when(harvardApiClient.fetchArtworkDetail(1234, existingArtwork))
+                    .thenReturn(existingArtwork);
+            Artwork artwork = artworkService.getArtworkDetails(existingArtwork);
+            assertThat(artwork).isEqualTo(existingArtwork);
+            verify(harvardApiClient).fetchArtworkDetail(1234, existingArtwork);
+        }
+
+        @Test
+        @DisplayName("Should return artwork details when museum name is Cleveland")
+        void clevelandMuseum() {
+            Artwork existingArtwork = Artwork.builder()
+                    .title("title keyword")
+                    .yearMade("1920")
+                    .culture("Germany")
+                    .artist("artist")
+                    .artistActiveYear("1900-1980")
+                    .museumName("The Cleveland Museum of Art")
+                    .sourceArtworkId(1234)
+                    .build();
+            when(clevelandApiClient.fetchArtworkDetail(1234, existingArtwork))
+                    .thenReturn(existingArtwork);
+            Artwork artwork = artworkService.getArtworkDetails(existingArtwork);
+            assertThat(artwork).isEqualTo(existingArtwork);
+            verify(clevelandApiClient).fetchArtworkDetail(1234, existingArtwork);
         }
     }
 }
