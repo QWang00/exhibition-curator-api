@@ -20,9 +20,9 @@ public class ArtworkServiceImpl implements ArtworkService{
 
     @Override
     public List<Artwork> getArtworks(String keyword, String artist, String museum, int page) {
-        if ("Harvard".equals(museum)) {
+        if ("Harvard Art Museum".equals(museum)) {
             return harvardApiClient.fetchArtworkList(keyword, artist, 10, page);
-        } else if ("Cleveland".equals(museum)) {
+        } else if ("The Cleveland Museum of Art".equals(museum)) {
             return clevelandApiClient.fetchArtworkList(keyword, 10, page * 10, artist);
         }
         return Collections.emptyList();
