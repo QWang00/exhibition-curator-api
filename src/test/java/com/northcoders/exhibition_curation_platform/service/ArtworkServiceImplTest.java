@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -79,6 +80,26 @@ class ArtworkServiceImplTest {
             assertThat(actualResult.getFirst().getTombstone().equals("keyword tombstone, 1920, Germany, artist, 1900-1980"));
             verify(clevelandApiClient).fetchArtworkList("keyword", 10, 0, "artist");
 
+        }
+    }
+
+    @Nested
+    class GetArtworkDetails {
+
+        @Test
+        @DisplayName("Should throw exception when museum name is invalid")
+        void invalidMuseum(){
+            Artwork artwork = Artwork.builder()
+                    .title("title keyword")
+                    .yearMade("1920")
+                    .culture("Germany")
+                    .artist("artist")
+                    .artistActiveYear("1900-1980")
+                    .museumName("Harvard")
+                    .build();
+            IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                    () -> artworkService.getArtworkDetails(artwork));
+            assertThat(exception.getMessage()).isEqualTo("Invalid museum source: Harvard");
         }
     }
 }
