@@ -57,6 +57,8 @@ class ArtworkServiceImplTest {
             when(harvardApiClient.fetchArtworkList("keyword", "artist", 10,1)).thenReturn(artworks);
             List<Artwork> actualResult = artworkService.getArtworks("keyword", "artist", "Harvard Art Museum", 1);
             assertThat(actualResult.size() == 1);
+            assertThat(actualResult.getFirst().getMuseumName().equals("Harvard Art Museum"));
+            assertThat(actualResult.getFirst().getCulture().equals("Germany"));
             verify(harvardApiClient).fetchArtworkList("keyword", "artist", 10, 1);
 
         }
@@ -66,18 +68,16 @@ class ArtworkServiceImplTest {
         void clevelandMuseum(){
             List<Artwork> artworks = new ArrayList<>();
             artworks.add(Artwork.builder()
-                    .title("title keyword")
-                    .yearMade("1920")
-                    .culture("Germany")
-                    .artist("artist")
-                    .artistActiveYear("1900-1980")
+                    .tombstone("keyword tombstone, 1920, Germany, artist, 1900-1980")
                     .museumName("The Cleveland Museum of Art")
+                    .artist("artist")
                     .build());
 
-            when(clevelandApiClient.fetchArtworkList("keyword", 10, 10, "artist")).thenReturn(artworks);
+            when(clevelandApiClient.fetchArtworkList("keyword", 10, 0, "artist")).thenReturn(artworks);
             List<Artwork> actualResult = artworkService.getArtworks("keyword", "artist", "The Cleveland Museum of Art", 1);
             assertThat(actualResult.size() == 1);
-            verify(clevelandApiClient).fetchArtworkList("keyword", 10, 10, "artist");
+            assertThat(actualResult.getFirst().getTombstone().equals("keyword tombstone, 1920, Germany, artist, 1900-1980"));
+            verify(clevelandApiClient).fetchArtworkList("keyword", 10, 0, "artist");
 
         }
     }
