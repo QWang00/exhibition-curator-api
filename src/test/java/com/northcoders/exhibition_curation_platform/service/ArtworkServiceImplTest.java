@@ -54,8 +54,8 @@ class ArtworkServiceImplTest {
                     .museumName("Harvard Art Museum")
                     .build());
 
-            when(harvardApiClient.fetchArtworkList("keyword", "artist", 10,0)).thenReturn(artworks);
-            List<Artwork> actualResult = artworkService.getArtworks("keyword", "artist", "Harvard Art Museum", 0);
+            when(harvardApiClient.fetchArtworkList("keyword", "artist", 10,1)).thenReturn(artworks);
+            List<Artwork> actualResult = artworkService.getArtworks("keyword", "artist", "Harvard Art Museum", 1);
             assertThat(actualResult.size() == 1);
             verify(harvardApiClient).fetchArtworkList("keyword", "artist", 10, 0);
 
