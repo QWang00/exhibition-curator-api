@@ -41,6 +41,24 @@ class ArtworkServiceImplTest {
             assertThat(actualResult.isEmpty());
         }
 
+        @Test
+        @DisplayName("Should fetch artwork list from Harvard API when 'Harvard' is specified as the museum")
+        void harvardMuseum(){
+            List<Artwork> artworks = new ArrayList<>();
+            artworks.add(Artwork.builder()
+                    .title("title keyword")
+                    .yearMade("1920")
+                    .culture("Germany")
+                    .artist("artist")
+                    .artistActiveYear("1900-1980")
+                    .museumName("Harvard Art Museum")
+                    .build());
 
+            when(harvardApiClient.fetchArtworkList("keyword", "artist", 10,0)).thenReturn(artworks);
+            List<Artwork> actualResult = artworkService.getArtworks("keyword", "artist", "Harvard Art Museum", 0);
+            assertThat(actualResult.size() == 1);
+            verify(harvardApiClient).fetchArtworkList("keyword", "artist", 10, 0);
+
+        }
     }
 }
