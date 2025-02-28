@@ -141,6 +141,20 @@ class ArtworkControllerTest {
                     .andExpect(jsonPath("$.artworks.length()").value(2));
         }
 
+        @Test
+        @DisplayName("Should return artworks when both keyword and artist match")
+        void clevelandWithKeywordArtist() throws Exception {
+            when (artworkService.getArtworks("keyword", "artist2", "The Cleveland Museum of Art",1))
+                    .thenReturn(clevelandArtwork);
+            mockMvcController.perform(get(BASE_URL + "/cleveland")
+                            .param("keyword", "keyword")
+                            .param("artist", "artist2")
+                            .param("page", "1"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.artworks").isArray())
+                    .andExpect(jsonPath("$.artworks.length()").value(2));
+        }
+
     }
 
 
