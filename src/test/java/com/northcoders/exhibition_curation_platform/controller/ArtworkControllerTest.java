@@ -80,6 +80,8 @@ class ArtworkControllerTest {
                     .param("keyword", "keyword")
                     .param("page", "1"))
                     .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.nextPage").doesNotExist())
+                    .andExpect(jsonPath("$.prevPage").doesNotExist())
                     .andExpect(jsonPath("$.artworks").isArray())
                     .andExpect(jsonPath("$.artworks.length()").value(2));
         }
@@ -151,11 +153,7 @@ class ArtworkControllerTest {
                     .andExpect(jsonPath("$.artworks.length()").value(2));
         }
 
-        @Test
-        @DisplayName("Should not show next page when there is one result")
-        void harvardNextPageNotWorking() throws Exception {
 
-        }
 
     }
 
