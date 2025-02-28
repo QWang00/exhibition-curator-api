@@ -29,7 +29,10 @@ public class ClevelandApiClient {
                         "&skip=" + skip +
                         "&limit=" + limit +
                         "&fields=tombstone,images");
-        if (!artist.isEmpty()) {
+        if(query != null && query.isEmpty()){
+            urlBuilder.append("&q=").append(query);
+        }
+        if (artist != null && !artist.isEmpty()) {
             urlBuilder.append("&artists=").append(artist);
         }
 
