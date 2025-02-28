@@ -76,13 +76,26 @@ class ArtworkControllerTest {
         }
 
         @Test
-        @DisplayName("Should return artwork when keyword match and artist field is empty")
+        @DisplayName("Should return Harvard artworks when keyword match and artist field is empty")
         void harvardWithKeywordNoArtist() throws Exception {
             when (artworkService.getArtworks("keyword", null, "Harvard Art Museum",1))
                     .thenReturn(harvardArtwork);
             mockMvcController.perform(get(BASE_URL + "/harvard")
                     .param("keyword", "keyword")
                     .param("page", "1"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.artworks").isArray())
+                    .andExpect(jsonPath("$.artworks.length()").value(2));
+        }
+
+        @Test
+        @DisplayName("Should return Cleveland artworks when keyword match and artist field is empty")
+        void clevelandWithKeywordNoArtist() throws Exception {
+            when (artworkService.getArtworks("keyword", null, "The Cleveland Museum of Art",1))
+                    .thenReturn(clevelandArtwork);
+            mockMvcController.perform(get(BASE_URL + "/cleveland")
+                            .param("keyword", "keyword")
+                            .param("page", "1"))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.artworks").isArray())
                     .andExpect(jsonPath("$.artworks.length()").value(2));
