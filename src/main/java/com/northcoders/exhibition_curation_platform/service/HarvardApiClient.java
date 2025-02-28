@@ -23,14 +23,23 @@ public class HarvardApiClient {
     }
 
     public List<Artwork> fetchArtworkList (String query, String artist, int size, int page){
-        String url = BASE_URL +
-                "?fields=title,people,dated,primaryimageurl"  +
-                "&q=" + query +
-                "&person=" + artist +
-                "&size=" + size +
-                "&page=" + page +
-                "&hasimage=1" +
-                "&apikey=" + ApiKeyManager.getHAMApiKey();
+        StringBuilder urlBuilder = new StringBuilder(BASE_URL);
+        urlBuilder.append("?fields=title,people,dated,primaryimageurl");
+
+        if (query != null && !query.isEmpty()){
+            urlBuilder.append("&q=").append(query);
+        }
+
+        if (artist!= null && !artist.isEmpty()){
+            urlBuilder.append("&person=").append(artist);
+        }
+
+        urlBuilder.append("&size=").append(size)
+                .append("&page=").append(page)
+                .append("&hasimage=1")
+                .append("&apikey=").append(ApiKeyManager.getHAMApiKey());
+       String url = urlBuilder.toString();
+
         Map<String, Object> response = restTemplate.getForObject(url, Map.class);
 
         // Check if response is null or doesn't contain "data"
