@@ -113,6 +113,14 @@ public class HarvardApiClient {
             artwork.setCulture((String) firstPerson.get("culture"));
         }
         artwork.setMuseumName(MUSEUM_NAME);
+
+        String preview = artwork.getTitle() + ", "
+                + artwork.getYearMade() + ". "
+                + artwork.getArtist() + " ("
+                + artwork.getCulture() + ", "
+                + artwork.getArtistActiveYear() + ").";
+        artwork.setPreview(preview);
+
         return artwork;
     }
 
