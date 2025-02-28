@@ -9,9 +9,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import java.util.ArrayList;
 import java.util.List;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -152,6 +155,29 @@ class ArtworkControllerTest {
                     .andExpect(jsonPath("$.artworks").isArray())
                     .andExpect(jsonPath("$.artworks.length()").value(2));
         }
+
+        @Test
+        void testNextPageWorkingWhenElevenResults() throws Exception {
+            List<Artwork> artworks = new ArrayList<>();
+            for (int i = 1; i <= 11; i++) {
+                artworks.add(
+                        Artwork.builder()
+                                .title("Title" + i)
+                                .artist("Artist" + i)
+                                .museumName("The Cleveland Museum of Art")
+                                .build()
+                );
+            }
+
+            Mockito.when(artworkService.getArtworks(null, null, "The Cleveland Museum of Art", 1))
+                    .thenReturn(artworks);
+
+            mockMvcController.perform(get(BASE_URL + "/cleveland")
+                            .param("page", "1"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.nextPage").value(2));
+        }
+
 
 
 
