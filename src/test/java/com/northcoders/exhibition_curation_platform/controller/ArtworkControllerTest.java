@@ -40,25 +40,21 @@ class ArtworkControllerTest {
             .title("title1 keyword")
             .artist("artist1")
             .museumName("Harvard Art Museum")
-            .sourceArtworkId(1234)
             .build();
     Artwork harvardArtwork2 = Artwork.builder()
             .title("title2 keyword")
             .artist("artist1")
             .museumName("Harvard Art Museum")
-            .sourceArtworkId(1235)
             .build();
     Artwork clevelandArtwork1 = Artwork.builder()
             .artist("artist2")
             .tombstone("keyword, yearMade3, artist3, artistCulture3, artistActive3")
             .museumName("The Cleveland Museum of Art")
-            .sourceArtworkId(1236)
             .build();
     Artwork clevelandArtwork2 = Artwork.builder()
             .artist("artist2")
             .tombstone("keyword, yearMade4, artist4, artistCulture4, artistActive4")
             .museumName("The Cleveland Museum of Art")
-            .sourceArtworkId(1237)
             .build();
     private final List<Artwork> harvardArtwork = List.of(harvardArtwork1, harvardArtwork2);
     private final List<Artwork> clevelandArtwork = List.of(clevelandArtwork1, clevelandArtwork2);
@@ -153,6 +149,12 @@ class ArtworkControllerTest {
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.artworks").isArray())
                     .andExpect(jsonPath("$.artworks.length()").value(2));
+        }
+
+        @Test
+        @DisplayName("Should not show next page when there is one result")
+        void harvardNextPageNotWorking() throws Exception {
+
         }
 
     }
