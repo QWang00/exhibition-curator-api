@@ -15,6 +15,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -157,6 +158,7 @@ class ArtworkControllerTest {
         }
 
         @Test
+        @DisplayName("Should show next page when there are 11 results")
         void testNextPageWorkingWhenElevenResults() throws Exception {
             List<Artwork> artworks = new ArrayList<>();
             for (int i = 1; i <= 11; i++) {
@@ -177,6 +179,24 @@ class ArtworkControllerTest {
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.nextPage").value(2));
         }
+
+        @Test
+        @DisplayName("Should return no result when there is no match")
+        void noMatch() throws Exception {
+            when(artworkService.getArtworks("noMatch", "stillNoMatch", "The Cleveland Museum of Art", 1))
+                    .thenReturn(Collections.emptyList());
+
+            mockMvcController.perform(get(BASE_URL + "/cleveland")
+                            .param("page", "1")
+                            .param("keyword", "noMatch")
+                            .param("artist", "stillNoMatch"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.artworks").isArray())
+                    .andExpect(jsonPath("$.nextPage").doesNotExist())
+                    .andExpect(jsonPath("$.prevPage").doesNotExist())
+                    .andExpect(jsonPath("$.artworks.length()").value(0));
+        }
+
 
 
 
