@@ -50,13 +50,13 @@ class ArtworkControllerTest {
             .build();
     Artwork clevelandArtwork1 = Artwork.builder()
             .artist("artist2")
-            .tombstone("keyword, yearmade3, artist3, artistCulture3, artistActive3")
+            .tombstone("keyword, yearMade3, artist3, artistCulture3, artistActive3")
             .museumName("The Cleveland Museum of Art")
             .sourceArtworkId(1236)
             .build();
     Artwork clevelandArtwork2 = Artwork.builder()
             .artist("artist2")
-            .tombstone("keyword, yearmade4, artist4, artistCulture4, artistActive4")
+            .tombstone("keyword, yearMade4, artist4, artistCulture4, artistActive4")
             .museumName("The Cleveland Museum of Art")
             .sourceArtworkId(1237)
             .build();
@@ -121,6 +121,20 @@ class ArtworkControllerTest {
                     .thenReturn(clevelandArtwork);
             mockMvcController.perform(get(BASE_URL + "/cleveland")
                             .param("artist", "artist2")
+                            .param("page", "1"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.artworks").isArray())
+                    .andExpect(jsonPath("$.artworks.length()").value(2));
+        }
+
+        @Test
+        @DisplayName("Should return artworks when both keyword and artist match")
+        void harvardWithKeywordArtist() throws Exception {
+            when (artworkService.getArtworks("keyword", "artist1", "Harvard Art Museum",1))
+                    .thenReturn(harvardArtwork);
+            mockMvcController.perform(get(BASE_URL + "/harvard")
+                            .param("keyword", "keyword")
+                            .param("artist", "artist1")
                             .param("page", "1"))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.artworks").isArray())
