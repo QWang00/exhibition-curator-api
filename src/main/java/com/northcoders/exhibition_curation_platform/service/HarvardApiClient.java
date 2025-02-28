@@ -100,7 +100,7 @@ public class HarvardApiClient {
     private Artwork mapToArtwork(Map<String, Object> response) {
         Artwork artwork = new Artwork();
 
-        artwork.setTombstone((String) response.get("title"));
+        artwork.setTitle((String) response.get("title"));
         artwork.setImageUrl((String) response.get("primaryimageurl") );
         artwork.setYearMade((String) response.get("dated"));
         artwork.setSourceArtworkId((Integer)response.get("id"));
