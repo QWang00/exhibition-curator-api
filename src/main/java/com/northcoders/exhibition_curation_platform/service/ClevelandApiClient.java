@@ -79,29 +79,28 @@ public class ClevelandApiClient {
         artwork.setSourceArtworkId((Integer) response.get("id"));
         artwork.setTombstone((String) response.get("tombstone"));
         setPreview(artwork);
+        setImageUrl(response, artwork);
+        artwork.setMuseumName(MUSEUM_NAME);
 
-        // Extract images
+        return artwork;
+    }
+
+    private static void setImageUrl(Map<String, Object> response, Artwork artwork) {
         Map<String, Object> images = (Map<String, Object>) response.get("images");
         if (images != null) {
             Map<String, String> imageMap = null;
 
-            // Prefer "print" image first
             if (images.containsKey("print")) {
                 imageMap = (Map<String, String>) images.get("print");
             }
-            // Fallback to "web" image if "print" is missing
             else if (images.containsKey("web")) {
                 imageMap = (Map<String, String>) images.get("web");
             }
 
-            // Set image URL if available
             if (imageMap != null) {
                 artwork.setImageUrl(imageMap.get("url"));
             }
         }
-
-        artwork.setMuseumName(MUSEUM_NAME);
-        return artwork;
     }
 
     private static void setPreview(Artwork artwork) {
