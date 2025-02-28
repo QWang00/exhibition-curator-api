@@ -29,14 +29,14 @@ public class ClevelandApiClient {
                         "&skip=" + skip +
                         "&limit=" + limit +
                         "&fields=tombstone,images");
-        if(query != null && query.isEmpty()){
+        if (query != null && query.isEmpty()) {
             urlBuilder.append("&q=").append(query);
         }
         if (artist != null && !artist.isEmpty()) {
             urlBuilder.append("&artists=").append(artist);
         }
 
-        Map <String, Object> response = restTemplate.getForObject(urlBuilder.toString(), Map.class);
+        Map<String, Object> response = restTemplate.getForObject(urlBuilder.toString(), Map.class);
 
         // Check if response is null or doesn't contain "data"
         if (response == null || !response.containsKey("data")) {
@@ -76,8 +76,9 @@ public class ClevelandApiClient {
 
     private Artwork mapToArtwork(Map<String, Object> response) {
         Artwork artwork = new Artwork();
-        artwork.setTombstone((String) response.get("tombstone"));
         artwork.setSourceArtworkId((Integer) response.get("id"));
+        artwork.setTombstone((String) response.get("tombstone"));
+        setPreview(artwork);
 
         // Extract images
         Map<String, Object> images = (Map<String, Object>) response.get("images");
@@ -103,5 +104,27 @@ public class ClevelandApiClient {
         return artwork;
     }
 
-
+    private static void setPreview(Artwork artwork) {
+        String tombstone = artwork.getTombstone();
+        if (tombstone != null) {
+            int dotIndex = tombstone.indexOf(".");
+            if (dotIndex != -1) {
+                int bracketIndex = tombstone.indexOf(")", dotIndex);
+                if (bracketIndex != -1) {
+                    String preview = tombstone.substring(0, bracketIndex + 1);
+                    artwork.setPreview(preview);
+                } else {
+                    artwork.setPreview(tombstone.substring(0, dotIndex + 1));
+                }
+            } else {
+                int index = tombstone.indexOf("]");
+                if (index != -1) {
+                    String preview = tombstone.substring(0, index + 1);
+                    artwork.setPreview(preview);
+                } else {
+                    artwork.setPreview(tombstone);
+                }
+            }
+        }
+    }
 }
