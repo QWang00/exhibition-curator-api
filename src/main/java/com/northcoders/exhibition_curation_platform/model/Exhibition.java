@@ -4,8 +4,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @NoArgsConstructor
@@ -20,6 +20,21 @@ public class Exhibition {
     @Column(nullable = false)
     private String name;
 
-    @ManyToMany(mappedBy = "exhibitions")
-    private List<Artwork> artworks;
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(
+            name = "exhibition_artwork",
+            joinColumns = @JoinColumn(name = "exhibition_id"),
+            inverseJoinColumns = @JoinColumn(name = "artwork_id")
+    )
+    private Set<Artwork> artworks = new HashSet<>();
+
+    public void addArtwork(Artwork artwork) {
+        artworks.add(artwork);
+        artwork.getExhibitions().add(this);
+    }
+
+    public void removeArtwork(Artwork artwork) {
+        artworks.remove(artwork);
+        artwork.getExhibitions().remove(this);
+    }
 }
