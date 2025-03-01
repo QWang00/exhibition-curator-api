@@ -64,6 +64,9 @@ class ArtworkControllerTest {
             .tombstone("keyword, yearMade3, artist3, artistCulture3, artistActive3")
             .sourceArtworkId(1234)
             .museumName("The Cleveland Museum of Art")
+            .description("description3")
+            .preview("preview3")
+            .imageUrl("image")
             .build();
     Artwork clevelandArtwork2 = Artwork.builder()
             .artist("artist2")
@@ -234,6 +237,21 @@ class ArtworkControllerTest {
                     .andExpect(jsonPath("$.artist").isNotEmpty())
                     .andExpect(jsonPath("$.culture").isNotEmpty())
                     .andExpect(jsonPath("$.artistActiveYear").isNotEmpty())
+                    .andExpect(jsonPath("$.preview").isNotEmpty())
+                    .andExpect(jsonPath("$.description").isNotEmpty());
+        }
+
+        @Test
+        @DisplayName("should return valid artwork for valid Harvard source id")
+        public void ClevelandValidId() throws Exception {
+            Mockito.when(artworkService.getArtworkDetails(1234, "The Cleveland Museum of Art"))
+                    .thenReturn(clevelandArtwork1);
+
+            mockMvcController.perform(get(BASE_URL+ "/cleveland/artwork/1234"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.sourceArtworkId").value(1234))
+                    .andExpect(jsonPath("$.imageUrl").isNotEmpty())
+                    .andExpect(jsonPath("$.tombstone").isNotEmpty())
                     .andExpect(jsonPath("$.preview").isNotEmpty())
                     .andExpect(jsonPath("$.description").isNotEmpty());
         }
