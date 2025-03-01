@@ -63,14 +63,14 @@ class ArtworkControllerTest {
     private final List<Artwork> harvardArtwork = List.of(harvardArtwork1, harvardArtwork2);
     private final List<Artwork> clevelandArtwork = List.of(clevelandArtwork1, clevelandArtwork2);
 
-    private final String BASE_URL = "/api/v1/search-results";
+    private final String BASE_URL = "/api/v1";
 
     @Nested
     class GetArtworks {
         @Test
         @DisplayName("Should expect bad request when museum name is invalid ")
         void invalidMuseum() throws Exception {
-            mockMvcController.perform(get(BASE_URL + "/invalidMuseum"))
+            mockMvcController.perform(get(BASE_URL + "/search-results/invalidMuseum"))
                     .andExpect(status().isBadRequest())
                     .andExpect(jsonPath("$.error").value("Invalid museum name"));
         }
@@ -80,7 +80,7 @@ class ArtworkControllerTest {
         void harvardWithKeywordNoArtist() throws Exception {
             when (artworkService.getArtworks("keyword", null, "Harvard Art Museum",1))
                     .thenReturn(harvardArtwork);
-            mockMvcController.perform(get(BASE_URL + "/harvard")
+            mockMvcController.perform(get(BASE_URL + "/search-results/harvard")
                     .param("keyword", "keyword")
                     .param("page", "1"))
                     .andExpect(status().isOk())
@@ -95,7 +95,7 @@ class ArtworkControllerTest {
         void clevelandWithKeywordNoArtist() throws Exception {
             when (artworkService.getArtworks("keyword", null, "The Cleveland Museum of Art",1))
                     .thenReturn(clevelandArtwork);
-            mockMvcController.perform(get(BASE_URL + "/cleveland")
+            mockMvcController.perform(get(BASE_URL + "/search-results/cleveland")
                             .param("keyword", "keyword")
                             .param("page", "1"))
                     .andExpect(status().isOk())
@@ -108,7 +108,7 @@ class ArtworkControllerTest {
         void harvardWithArtistNoKeyword() throws Exception {
             when (artworkService.getArtworks(null, "artist1", "Harvard Art Museum",1))
                     .thenReturn(harvardArtwork);
-            mockMvcController.perform(get(BASE_URL + "/harvard")
+            mockMvcController.perform(get(BASE_URL + "/search-results/harvard")
                             .param("artist", "artist1")
                             .param("page", "1"))
                     .andExpect(status().isOk())
@@ -121,7 +121,7 @@ class ArtworkControllerTest {
         void clevelandWithArtistNoKeyword() throws Exception {
             when (artworkService.getArtworks(null, "artist2", "The Cleveland Museum of Art",1))
                     .thenReturn(clevelandArtwork);
-            mockMvcController.perform(get(BASE_URL + "/cleveland")
+            mockMvcController.perform(get(BASE_URL + "/search-results/cleveland")
                             .param("artist", "artist2")
                             .param("page", "1"))
                     .andExpect(status().isOk())
@@ -134,7 +134,7 @@ class ArtworkControllerTest {
         void harvardWithKeywordArtist() throws Exception {
             when (artworkService.getArtworks("keyword", "artist1", "Harvard Art Museum",1))
                     .thenReturn(harvardArtwork);
-            mockMvcController.perform(get(BASE_URL + "/harvard")
+            mockMvcController.perform(get(BASE_URL + "/search-results/harvard")
                             .param("keyword", "keyword")
                             .param("artist", "artist1")
                             .param("page", "1"))
@@ -148,7 +148,7 @@ class ArtworkControllerTest {
         void clevelandWithKeywordArtist() throws Exception {
             when (artworkService.getArtworks("keyword", "artist2", "The Cleveland Museum of Art",1))
                     .thenReturn(clevelandArtwork);
-            mockMvcController.perform(get(BASE_URL + "/cleveland")
+            mockMvcController.perform(get(BASE_URL + "/search-results/cleveland")
                             .param("keyword", "keyword")
                             .param("artist", "artist2")
                             .param("page", "1"))
@@ -174,7 +174,7 @@ class ArtworkControllerTest {
             Mockito.when(artworkService.getArtworks(null, null, "The Cleveland Museum of Art", 1))
                     .thenReturn(artworks);
 
-            mockMvcController.perform(get(BASE_URL + "/cleveland")
+            mockMvcController.perform(get(BASE_URL + "/search-results/cleveland")
                             .param("page", "1"))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.nextPage").value(2));
@@ -186,7 +186,7 @@ class ArtworkControllerTest {
             when(artworkService.getArtworks("noMatch", "stillNoMatch", "The Cleveland Museum of Art", 1))
                     .thenReturn(Collections.emptyList());
 
-            mockMvcController.perform(get(BASE_URL + "/cleveland")
+            mockMvcController.perform(get(BASE_URL + "/search-results/cleveland")
                             .param("page", "1")
                             .param("keyword", "noMatch")
                             .param("artist", "stillNoMatch"))
@@ -196,10 +196,6 @@ class ArtworkControllerTest {
                     .andExpect(jsonPath("$.prevPage").doesNotExist())
                     .andExpect(jsonPath("$.artworks.length()").value(0));
         }
-
-
-
-
 
     }
 
