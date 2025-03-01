@@ -3,8 +3,9 @@ package com.northcoders.exhibition_curation_platform.model;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import jakarta.persistence.*;
-
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -44,9 +45,7 @@ public class Artwork {
     @Lob
     private String preview;
 
-    @ManyToMany
-    private List<Exhibition> exhibitions;
-
-
+    @ManyToMany(mappedBy = "artworks")
+    private Set<Exhibition> exhibitions = new HashSet<>();
 
 }
