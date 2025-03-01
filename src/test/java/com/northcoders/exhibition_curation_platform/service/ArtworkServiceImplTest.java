@@ -96,7 +96,7 @@ class ArtworkServiceImplTest {
                     .museumName("Harvard")
                     .build();
             IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-                    () -> artworkService.getArtworkDetails(artwork));
+                    () -> artworkService.getArtworkDetails(1230, "Harvard"));
             assertThat(exception.getMessage()).isEqualTo("Invalid museum source: Harvard");
         }
 
@@ -112,11 +112,11 @@ class ArtworkServiceImplTest {
                     .museumName("Harvard Art Museum")
                     .sourceArtworkId(1234)
                     .build();
-            when(harvardApiClient.fetchArtworkDetail(1234, existingArtwork))
+            when(harvardApiClient.fetchArtworkDetail(1234))
                     .thenReturn(existingArtwork);
-            Artwork artwork = artworkService.getArtworkDetails(existingArtwork);
+            Artwork artwork = artworkService.getArtworkDetails(1234, "Harvard Art Museum");
             assertThat(artwork).isEqualTo(existingArtwork);
-            verify(harvardApiClient).fetchArtworkDetail(1234, existingArtwork);
+            verify(harvardApiClient).fetchArtworkDetail(1234);
         }
 
         @Test
