@@ -54,11 +54,7 @@ public class HarvardApiClient {
         }
 
         return artworksData.stream()
-                .filter(artworkData -> {
-                    Integer imageLevel = (Integer) artworkData.get("imagepermissionlevel");
-                    String imageUrl = (String) artworkData.get("primaryimageurl");
-                    return imageLevel != 2 && imageUrl != null;
-                })
+                .filter(this::isValidArtwork)
                 .map(this::mapToArtwork)
                 .collect(Collectors.toList());
 
@@ -71,57 +67,93 @@ public class HarvardApiClient {
         Map <String, Object> response = restTemplate.getForObject(url, Map.class);
 
         if (response == null ) {
-            return existingArtwork;
+            return null;
         }
 
-        List<Map<String, Object>> images = (List<Map<String, Object>>) response.get("images");
-        if (images != null && !images.isEmpty()) {
-            for (Map<String, Object> image : images) {
-                String description = (String) image.get("description");
-                if (description != null) {
-                    existingArtwork.setDescription(description);
-                    return existingArtwork;
-                }
-            }
-        }
+        Artwork artwork = new Artwork();
+        artwork.setSourceArtworkId(id);
+        artwork.setMuseumName(MUSEUM_NAME);
 
-        if (response.get("technique") != null) {
-            existingArtwork.setDescription("Technique: " + response.get("technique"));
-        } else if (response.get("medium") != null){
-            existingArtwork.setDescription("Medium: " + response.get("medium"));
-        } else if (response.get("classification") != null) {
-            existingArtwork.setDescription("Classification: " + response.get("classification"));
-        }
+        mapCommonFields(response, artwork);
+        setArtistInfo(response, artwork);
+        setDescription(response, artwork);
+        generatePreview(artwork);
 
-        return existingArtwork;
+        return artwork;
 
     }
 
-    private Artwork mapToArtwork(Map<String, Object> response) {
+    private Artwork mapToArtwork(Map<String, Object> artworkData) {
         Artwork artwork = new Artwork();
+        artwork.setTitle((String) artworkData.get("title"));
+        artwork.setImageUrl((String) artworkData.get("primaryimageurl"));
+        artwork.setYearMade((String) artworkData.get("dated"));
+        artwork.setSourceArtworkId((Integer) artworkData.get("id"));
 
+        setArtistInfo(artworkData, artwork);
+        generatePreview(artwork);
+
+        return artwork;
+    }
+
+    private void mapCommonFields(Map<String, Object> response, Artwork artwork) {
         artwork.setTitle((String) response.get("title"));
-        artwork.setImageUrl((String) response.get("primaryimageurl") );
+        artwork.setImageUrl((String) response.get("primaryimageurl"));
         artwork.setYearMade((String) response.get("dated"));
-        artwork.setSourceArtworkId((Integer)response.get("id"));
+    }
 
-        List<Map<String, Object>> people = (List<Map<String, Object>>) response.get("people");
+    private void setArtistInfo(Map<String, Object> source, Artwork artwork) {
+        List<Map<String, Object>> people = (List<Map<String, Object>>) source.get("people");
         if (people != null && !people.isEmpty()) {
             Map<String, Object> firstPerson = people.get(0);
             artwork.setArtist((String) firstPerson.get("displayname"));
             artwork.setArtistActiveYear((String) firstPerson.get("displaydate"));
             artwork.setCulture((String) firstPerson.get("culture"));
         }
-        artwork.setMuseumName(MUSEUM_NAME);
+    }
 
-        String preview = artwork.getTitle() + ", "
-                + artwork.getYearMade() + ". "
-                + artwork.getArtist() + " ("
-                + artwork.getCulture() + ", "
-                + artwork.getArtistActiveYear() + ").";
+    private void setDescription(Map<String, Object> response, Artwork artwork) {
+        String description = extractDescriptionFromImages(response);
+
+        if (description == null) {
+            description = getFallbackDescription(response);
+        }
+
+        artwork.setDescription(description);
+    }
+
+    private String extractDescriptionFromImages(Map<String, Object> response) {
+        List<Map<String, Object>> images = (List<Map<String, Object>>) response.get("images");
+        if (images != null) {
+            for (Map<String, Object> image : images) {
+                String desc = (String) image.get("description");
+                if (desc != null) return desc;
+            }
+        }
+        return null;
+    }
+
+    private String getFallbackDescription(Map<String, Object> response) {
+        if (response.get("technique") != null) return "Technique: " + response.get("technique");
+        if (response.get("medium") != null) return "Medium: " + response.get("medium");
+        if (response.get("classification") != null) return "Classification: " + response.get("classification");
+        return null;
+    }
+
+    private void generatePreview(Artwork artwork) {
+        String preview = String.format("%s, %s. %s (%s, %s).",
+                artwork.getTitle(),
+                artwork.getYearMade(),
+                artwork.getArtist(),
+                artwork.getCulture(),
+                artwork.getArtistActiveYear());
         artwork.setPreview(preview);
+    }
 
-        return artwork;
+    private boolean isValidArtwork(Map<String, Object> artworkData) {
+        Integer imageLevel = (Integer) artworkData.get("imagepermissionlevel");
+        String imageUrl = (String) artworkData.get("primaryimageurl");
+        return imageLevel != null && imageLevel != 2 && imageUrl != null;
     }
 
 }
