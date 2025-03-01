@@ -29,13 +29,17 @@ public class ArtworkServiceImpl implements ArtworkService{
     }
 
     @Override
-    public Artwork getArtworkDetails(Artwork existingArtwork) {
-        int sourceArtworkId = existingArtwork.getSourceArtworkId();
-        String museumName = existingArtwork.getMuseumName();
-        if("Harvard Art Museum".equals(museumName)) {
-            return harvardApiClient.fetchArtworkDetail(sourceArtworkId, existingArtwork);
-        } else if ("The Cleveland Museum of Art".equals(museumName)) {
-            return clevelandApiClient.fetchArtworkDetail(sourceArtworkId, existingArtwork);
+    public Artwork getArtworkDetails(int sourceId, String museumName) {
+
+        Artwork artwork = Artwork.builder()
+                .sourceArtworkId(sourceId)
+                .museumName(museumName)
+                .build();
+
+        if("Harvard Art Museum".equalsIgnoreCase(museumName)) {
+            return harvardApiClient.fetchArtworkDetail(sourceId);
+        } else if ("The Cleveland Museum of Art".equalsIgnoreCase(museumName)) {
+            return clevelandApiClient.fetchArtworkDetail(sourceId);
         } else {
             throw new IllegalArgumentException("Invalid museum source: " + museumName);
         }
