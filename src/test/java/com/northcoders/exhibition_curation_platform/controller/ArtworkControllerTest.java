@@ -17,6 +17,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -42,8 +44,15 @@ class ArtworkControllerTest {
 
     Artwork harvardArtwork1 = Artwork.builder()
             .title("title1 keyword")
+            .imageUrl("image1")
+            .yearMade("1985")
             .artist("artist1")
+            .culture("culture1")
+            .artistActiveYear("artist year 1")
             .museumName("Harvard Art Museum")
+            .sourceArtworkId(1234)
+            .preview("preview1")
+            .description("description1")
             .build();
     Artwork harvardArtwork2 = Artwork.builder()
             .title("title2 keyword")
@@ -53,6 +62,7 @@ class ArtworkControllerTest {
     Artwork clevelandArtwork1 = Artwork.builder()
             .artist("artist2")
             .tombstone("keyword, yearMade3, artist3, artistCulture3, artistActive3")
+            .sourceArtworkId(1234)
             .museumName("The Cleveland Museum of Art")
             .build();
     Artwork clevelandArtwork2 = Artwork.builder()
@@ -207,6 +217,25 @@ class ArtworkControllerTest {
         void invalidMuseumName () throws Exception {
             mockMvcController.perform(get(BASE_URL + "/invalid/artwork/1234"))
                     .andExpect(status().isBadRequest());
+        }
+
+        @Test
+        @DisplayName("should return valid artwork for valid Harvard source id")
+        public void harvardValidId() throws Exception {
+            Mockito.when(artworkService.getArtworkDetails(1234, "Harvard Art Museum"))
+                    .thenReturn(harvardArtwork1);
+
+            mockMvcController.perform(get(BASE_URL+ "/harvard/artwork/1234"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.sourceArtworkId").value(1234))
+                    .andExpect(jsonPath("$.imageUrl").isNotEmpty())
+                    .andExpect(jsonPath("$.title").isNotEmpty())
+                    .andExpect(jsonPath("$.yearMade").isNotEmpty())
+                    .andExpect(jsonPath("$.artist").isNotEmpty())
+                    .andExpect(jsonPath("$.culture").isNotEmpty())
+                    .andExpect(jsonPath("$.artistActiveYear").isNotEmpty())
+                    .andExpect(jsonPath("$.preview").isNotEmpty())
+                    .andExpect(jsonPath("$.description").isNotEmpty());
         }
     }
 
