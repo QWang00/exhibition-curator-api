@@ -255,6 +255,20 @@ class ArtworkControllerTest {
                     .andExpect(jsonPath("$.preview").isNotEmpty())
                     .andExpect(jsonPath("$.description").isNotEmpty());
         }
+
+        @Test
+        @DisplayName("Should return valid response for both lowercase & uppercase of museum name")
+        void caseInsensitiveMuseumName () throws Exception {
+            Mockito.when(artworkService.getArtworkDetails(1234, "The Cleveland Museum of Art"))
+                    .thenReturn(clevelandArtwork1);
+            mockMvcController.perform(get(BASE_URL+ "/CLEVELAND/artwork/1234"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.sourceArtworkId").value(1234))
+                    .andExpect(jsonPath("$.imageUrl").isNotEmpty())
+                    .andExpect(jsonPath("$.tombstone").isNotEmpty())
+                    .andExpect(jsonPath("$.preview").isNotEmpty())
+                    .andExpect(jsonPath("$.description").isNotEmpty());
+        }
     }
 
 
