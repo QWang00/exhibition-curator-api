@@ -3,6 +3,7 @@ package com.northcoders.exhibition_curation_platform.controller;
 import com.northcoders.exhibition_curation_platform.model.Artwork;
 import com.northcoders.exhibition_curation_platform.service.ArtworkService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
@@ -50,8 +51,28 @@ public class ArtworkController {
     }
 
     @GetMapping("/{museum}/artwork/{sourceId}")
-    public ResponseEntity<Artwork> getArtworkDetail(@PathVariable int sourceId){
-        return null;
+    public ResponseEntity<Artwork> getArtworkDetails(
+            @PathVariable int sourceId,
+            @PathVariable String museum
+    ){
+        Map<String, String> museumMap = Map.of(
+                "harvard", "Harvard Art Museum",
+                "cleveland", "The Cleveland Museum of Art"
+        );
+
+        String fullMuseumName = museumMap.get(museum.toLowerCase());
+
+        if (fullMuseumName == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+        try{
+            Artwork artwork = artworkService.getArtworkDetails(sourceId, fullMuseumName);
+            return ResponseEntity.ok(artwork);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(null);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(null);
+        }
     }
 
 
