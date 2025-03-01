@@ -54,24 +54,26 @@ public class ClevelandApiClient {
                 .collect(Collectors.toList());
     }
 
-    public Artwork fetchArtworkDetail(int id, Artwork existingArtwork) {
+    public Artwork fetchArtworkDetail(int id) {
         String url = BASE_URL + "/artworks/" + id + "?fields=description,tombstone,images";
         Map<String, Object> response = restTemplate.getForObject(url, Map.class);
 
         // Ensure response and "data" exist
         if (response == null || !response.containsKey("data")) {
-            return existingArtwork; // Return existing artwork unchanged if no data
+            return null; // Return existing artwork unchanged if no data
         }
 
-        Map<String, Object> artworkData = (Map<String, Object>) response.get("data");
+        Map<String, Object> data = (Map<String, Object>) response.get("data");
 
-        // Update description only if it's not null
-        String description = (String) artworkData.get("description");
-        if (description != null) {
-            existingArtwork.setDescription(description);
-        }
+        Artwork artwork = new Artwork();
+        artwork.setSourceArtworkId(id);
+        artwork.setMuseumName(MUSEUM_NAME);
 
-        return existingArtwork;
+        mapCommonFields(data, artwork);
+        setImageUrl(data, artwork);
+        generatePreviewFromTombstone(artwork);
+
+        return artwork;
     }
 
     private Artwork mapToArtwork(Map<String, Object> response) {

@@ -131,11 +131,11 @@ class ArtworkServiceImplTest {
                     .museumName("The Cleveland Museum of Art")
                     .sourceArtworkId(1234)
                     .build();
-            when(clevelandApiClient.fetchArtworkDetail(1234, existingArtwork))
+            when(clevelandApiClient.fetchArtworkDetail(1234))
                     .thenReturn(existingArtwork);
-            Artwork artwork = artworkService.getArtworkDetails(existingArtwork);
+            Artwork artwork = artworkService.getArtworkDetails(1234, "The Cleveland Museum of Art");
             assertThat(artwork).isEqualTo(existingArtwork);
-            verify(clevelandApiClient).fetchArtworkDetail(1234, existingArtwork);
+            verify(clevelandApiClient).fetchArtworkDetail(1234);
         }
     }
 }
