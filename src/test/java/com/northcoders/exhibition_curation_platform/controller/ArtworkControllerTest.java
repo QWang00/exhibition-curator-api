@@ -199,6 +199,17 @@ class ArtworkControllerTest {
 
     }
 
+    @Nested
+    class GetArtworkDetails {
+
+        @Test
+        @DisplayName("Should throw exception when museum name is invalid")
+        void invalidMuseumName () throws Exception {
+            mockMvcController.perform(get(BASE_URL + "/invalid/artwork/1234"))
+                    .andExpect(status().isBadRequest());
+        }
+    }
+
 
 
 }
