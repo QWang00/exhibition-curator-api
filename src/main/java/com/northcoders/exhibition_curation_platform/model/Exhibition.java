@@ -10,7 +10,7 @@ import java.util.List;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-public class Gallery {
+public class Exhibition {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,6 +20,6 @@ public class Gallery {
     @Column(nullable = false)
     private String name;
 
-    @ManyToMany(mappedBy = "galleries")
+    @ManyToMany(mappedBy = "exhibitions")
     private List<Artwork> artworks;
 }

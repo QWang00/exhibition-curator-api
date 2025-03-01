@@ -6,7 +6,6 @@ import jakarta.persistence.*;
 
 import java.util.List;
 
-
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -46,7 +45,7 @@ public class Artwork {
     private String preview;
 
     @ManyToMany
-    private List<Gallery> galleries;
+    private List<Exhibition> exhibitions;
 
 
 
