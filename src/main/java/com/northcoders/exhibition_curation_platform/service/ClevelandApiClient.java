@@ -78,32 +78,40 @@ public class ClevelandApiClient {
         Artwork artwork = new Artwork();
         artwork.setSourceArtworkId((Integer) response.get("id"));
         artwork.setTombstone((String) response.get("tombstone"));
-        setPreview(artwork);
+
+        mapCommonFields(response, artwork);
         setImageUrl(response, artwork);
-        artwork.setMuseumName(MUSEUM_NAME);
+        generatePreviewFromTombstone(artwork);
 
         return artwork;
     }
 
-    private static void setImageUrl(Map<String, Object> response, Artwork artwork) {
-        Map<String, Object> images = (Map<String, Object>) response.get("images");
+    private void mapCommonFields(Map<String, Object> source, Artwork artwork) {
+        artwork.setDescription((String) source.get("description"));
+        artwork.setTombstone((String) source.get("tombstone"));
+    }
+
+    private void setImageUrl(Map<String, Object> source, Artwork artwork) {
+        Map<String, Object> images = (Map<String, Object>) source.get("images");
         if (images != null) {
-            Map<String, String> imageMap = null;
-
-            if (images.containsKey("print")) {
-                imageMap = (Map<String, String>) images.get("print");
-            }
-            else if (images.containsKey("web")) {
-                imageMap = (Map<String, String>) images.get("web");
-            }
-
+            Map<String, String> imageMap = getPreferredImage(images);
             if (imageMap != null) {
                 artwork.setImageUrl(imageMap.get("url"));
             }
         }
     }
 
-    private static void setPreview(Artwork artwork) {
+    private Map<String, String> getPreferredImage(Map<String, Object> images) {
+        if (images.containsKey("print")) {
+            return (Map<String, String>) images.get("print");
+        }
+        if (images.containsKey("web")) {
+            return (Map<String, String>) images.get("web");
+        }
+        return null;
+    }
+
+    private static void generatePreviewFromTombstone(Artwork artwork) {
         String tombstone = artwork.getTombstone();
         if (tombstone != null) {
             int dotIndex = tombstone.indexOf(".");
