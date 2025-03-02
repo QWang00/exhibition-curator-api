@@ -1,5 +1,6 @@
 package com.northcoders.exhibition_curation_platform.service;
 
+import com.northcoders.exhibition_curation_platform.exception.ItemNotFoundException;
 import com.northcoders.exhibition_curation_platform.model.Exhibition;
 import com.northcoders.exhibition_curation_platform.repository.ExhibitionRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -13,8 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
 @ExtendWith(MockitoExtension.class)
@@ -73,5 +76,24 @@ public class ExhibitionServiceImplTest {
             assertThat(actual).isEqualTo(exhibitions);
         }
 
+    }
+
+    @Nested
+    class GetExhibitionById {
+
+        @Test
+        @DisplayName("Should throw exception when ID is invalid")
+        void idNotFound() throws Exception {
+            List<Exhibition> exhibitions = List.of(
+                    Exhibition.builder()
+                            .name("Monet")
+                            .build()
+            );
+            when(mockExhibitionRepository.findById(2L)).thenReturn(Optional.empty());
+            assertThatThrownBy(()-> exhibitionServiceImp.getExhibitionById(2L))
+                    .isInstanceOf(ItemNotFoundException.class)
+                    .hasMessage(String.format("The exhibition with id '%s' cannot be found", 2));
+            verify(mockExhibitionRepository, never()).save(any(Exhibition.class));
+        }
     }
 }
