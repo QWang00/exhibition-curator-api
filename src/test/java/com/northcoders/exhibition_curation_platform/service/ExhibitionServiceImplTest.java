@@ -109,4 +109,20 @@ public class ExhibitionServiceImplTest {
             assertThat(actual.getName()).isEqualTo("Monet");
         }
     }
+
+    @Nested
+    class CreateExhibition{
+
+        @Test
+        @DisplayName("Should add a new exhibition successfully ")
+        void successCreation () throws Exception {
+            Exhibition exhibition = Exhibition.builder()
+                    .name("Monet")
+                    .build();
+            when(mockExhibitionRepository.save(exhibition)).thenReturn(exhibition);
+            Exhibition actual = exhibitionServiceImp.createExhibition("Monet");
+            assertThat(actual.getName()).isEqualTo("Impressionist Art");
+            verify(mockExhibitionRepository, times(1)).save(any(Exhibition.class));
+        }
+    }
 }
