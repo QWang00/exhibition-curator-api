@@ -31,11 +31,6 @@ public class ArtworkServiceImpl implements ArtworkService{
     @Override
     public Artwork getArtworkDetails(int sourceId, String museumName) {
 
-        Artwork artwork = Artwork.builder()
-                .sourceArtworkId(sourceId)
-                .museumName(museumName)
-                .build();
-
         if("Harvard Art Museum".equalsIgnoreCase(museumName)) {
             return harvardApiClient.fetchArtworkDetail(sourceId);
         } else if ("The Cleveland Museum of Art".equalsIgnoreCase(museumName)) {
