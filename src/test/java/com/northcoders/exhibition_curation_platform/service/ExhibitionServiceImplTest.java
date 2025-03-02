@@ -95,5 +95,18 @@ public class ExhibitionServiceImplTest {
                     .hasMessage(String.format("The exhibition with id '%s' cannot be found", 2));
             verify(mockExhibitionRepository, never()).save(any(Exhibition.class));
         }
+
+        @Test
+        @DisplayName("Should return exhibition when ID is valid")
+        void IdFound() throws Exception {
+            Exhibition exhibition = Exhibition.builder()
+                    .name("Monet")
+                    .build();
+            List<Exhibition> exhibitions = List.of(exhibition);
+            when(mockExhibitionRepository.findById(1L)).thenReturn(Optional.of(exhibition));
+            Exhibition actual = exhibitionServiceImp.getExhibitionById(1L);
+            assertThat(actual).isEqualTo(exhibition);
+            assertThat(actual.getName()).isEqualTo("Monet");
+        }
     }
 }
