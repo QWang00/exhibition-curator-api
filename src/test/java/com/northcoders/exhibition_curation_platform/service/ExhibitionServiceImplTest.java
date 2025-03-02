@@ -149,4 +149,17 @@ public class ExhibitionServiceImplTest {
         }
 
     }
+
+    @Nested
+    class UpdateExhibitionNameById {
+
+        @Test
+        @DisplayName("Should throw exception when ID is not found")
+        void invalidId () throws Exception{
+            when(mockExhibitionRepository.findById(2L)).thenReturn(Optional.empty());
+            assertThatThrownBy(()-> exhibitionServiceImp.updateExhibitionNameById(2L, "name"))
+                    .isExactlyInstanceOf(ItemNotFoundException.class)
+                    .hasMessage("The exhibition with id '2' cannot be found");
+        }
+    }
 }
