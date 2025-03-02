@@ -1,5 +1,6 @@
 package com.northcoders.exhibition_curation_platform.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import jakarta.persistence.*;
@@ -12,7 +13,6 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
-@Data
 @Builder
 public class Artwork {
 
@@ -37,6 +37,8 @@ public class Artwork {
     private String artist;
     private String culture;
     private String artistActiveYear;
+
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     @Lob
@@ -46,6 +48,7 @@ public class Artwork {
     private String preview;
 
     @ManyToMany(mappedBy = "artworks")
+    @JsonBackReference
     private Set<Exhibition> exhibitions = new HashSet<>();
 
 }

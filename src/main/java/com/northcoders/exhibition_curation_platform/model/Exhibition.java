@@ -1,5 +1,6 @@
 package com.northcoders.exhibition_curation_platform.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -13,7 +14,6 @@ import java.util.Set;
 @Getter
 @Setter
 @Builder
-@Data
 public class Exhibition {
 
     @Id
@@ -25,6 +25,7 @@ public class Exhibition {
     private String name;
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JsonManagedReference
     @JoinTable(
             name = "exhibition_artwork",
             joinColumns = @JoinColumn(name = "exhibition_id"),
