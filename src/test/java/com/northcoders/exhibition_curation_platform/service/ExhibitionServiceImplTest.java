@@ -225,7 +225,7 @@ public class ExhibitionServiceImplTest {
 
         @Test
         @DisplayName("Should fetch artwork from The Cleveland Museum of Art")
-        void fetchFromClevelandMuseum_Success() {
+        void fetchFromClevelandMuseum() {
             Artwork expectedArtwork = Artwork.builder()
                     .museumName("The Cleveland Museum of Art")
                     .sourceArtworkId(123)
@@ -241,6 +241,26 @@ public class ExhibitionServiceImplTest {
 
             verify(clevelandApiClient, times(1)).fetchArtworkDetail(123);
             verifyNoInteractions(harvardApiClient);
+        }
+
+        @Test
+        @DisplayName("Should fetch artwork from The Harvard Museum of Art")
+        void fetchFromHarvardMuseum() {
+            Artwork expectedArtwork = Artwork.builder()
+                    .museumName("The Cleveland Museum of Art")
+                    .sourceArtworkId(123)
+                    .title("The Starry Night")
+                    .build();
+
+            when(harvardApiClient.fetchArtworkDetail(123)).thenReturn(expectedArtwork);
+
+            Artwork actualArtwork = exhibitionServiceImp.fetchFromApi(123, "Harvard Museum Art");
+
+            assertThat(actualArtwork).isNotNull();
+            assertThat(actualArtwork.getTitle()).isEqualTo("The Starry Night");
+
+            verify(harvardApiClient, times(1)).fetchArtworkDetail(123);
+            verifyNoInteractions(clevelandApiClient);
         }
 
     }
