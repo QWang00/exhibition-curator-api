@@ -11,7 +11,7 @@ public interface ExhibitionService {
 
     Exhibition createExhibition(String name);
 
-    Exhibition updateExhibitionName(Long exhibitionId, String newName);
+    Exhibition updateExhibitionNameById(Long exhibitionId, String newName);
 
     Exhibition addArtworkToExhibition(Long exhibitionId, Integer sourceId, String museum);
 
