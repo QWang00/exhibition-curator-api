@@ -124,5 +124,29 @@ public class ExhibitionServiceImplTest {
             assertThat(actual.getName()).isEqualTo("Impressionist Art");
             verify(mockExhibitionRepository, times(1)).save(any(Exhibition.class));
         }
+
+        @Test
+        @DisplayName("Should create exhibitions with duplicate name")
+        void duplicateName () {
+            Exhibition exhibition1 = Exhibition.builder()
+                    .name("Monet")
+                    .build();
+            Exhibition exhibition2 = Exhibition.builder()
+                    .name("Monet")
+                    .build();
+
+            when(mockExhibitionRepository.save(any(Exhibition.class)))
+                    .thenAnswer(invocation -> invocation.getArgument(0));
+
+            Exhibition savedExhibition1 = exhibitionServiceImp.createExhibition("Monet");
+            Exhibition savedExhibition2 = exhibitionServiceImp.createExhibition("Monet");
+
+            assertThat(savedExhibition1).isNotNull();
+            assertThat(savedExhibition2).isNotNull();
+            assertThat(savedExhibition1.getName()).isEqualTo("Monet");
+            assertThat(savedExhibition2.getName()).isEqualTo("Monet");
+            verify(mockExhibitionRepository, times(2)).save(any(Exhibition.class));
+        }
+
     }
 }
