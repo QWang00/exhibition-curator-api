@@ -1,6 +1,7 @@
 package com.northcoders.exhibition_curation_platform.service;
 
 import com.northcoders.exhibition_curation_platform.exception.ItemNotFoundException;
+import com.northcoders.exhibition_curation_platform.model.Artwork;
 import com.northcoders.exhibition_curation_platform.model.Exhibition;
 import com.northcoders.exhibition_curation_platform.repository.ExhibitionRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -220,6 +221,26 @@ public class ExhibitionServiceImplTest {
                     .hasMessage("Invalid museum");
 
             verifyNoInteractions(harvardApiClient, clevelandApiClient);
+        }
+
+        @Test
+        @DisplayName("Should fetch artwork from The Cleveland Museum of Art")
+        void fetchFromClevelandMuseum_Success() {
+            Artwork expectedArtwork = Artwork.builder()
+                    .museumName("The Cleveland Museum of Art")
+                    .sourceArtworkId(123)
+                    .title("The Starry Night")
+                    .build();
+
+            when(clevelandApiClient.fetchArtworkDetail(123)).thenReturn(expectedArtwork);
+
+            Artwork actualArtwork = exhibitionServiceImp.fetchFromApi(123, "The Cleveland Museum of Art");
+
+            assertThat(actualArtwork).isNotNull();
+            assertThat(actualArtwork.getTitle()).isEqualTo("The Starry Night");
+
+            verify(clevelandApiClient, times(1)).fetchArtworkDetail(123);
+            verifyNoInteractions(harvardApiClient);
         }
 
     }
