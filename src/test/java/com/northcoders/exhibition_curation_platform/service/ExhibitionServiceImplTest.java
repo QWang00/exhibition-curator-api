@@ -179,5 +179,23 @@ public class ExhibitionServiceImplTest {
             verify(mockExhibitionRepository, times(1)).save(exhibition);
         }
 
+        @Test
+        @DisplayName("Should update name successfully when new name is duplicate")
+        void duplicateNewName () throws Exception{
+            String duplicateName = "identical";
+            Exhibition exhibition = Exhibition.builder()
+                    .name(duplicateName).build();
+            when(mockExhibitionRepository.findById(1L)).thenReturn(Optional.of(exhibition));
+            when(mockExhibitionRepository.save(any(Exhibition.class)))
+                    .thenAnswer(invocation -> invocation.getArgument(0));
+
+            Exhibition actual = exhibitionServiceImp.updateExhibitionNameById(1L, duplicateName);
+            assertThat(actual).isNotNull();
+            assertThat(actual.getName()).isEqualTo(duplicateName);
+
+            verify(mockExhibitionRepository, times(1)).findById(1L);
+            verify(mockExhibitionRepository, times(1)).save(exhibition);
+        }
+
     }
 }
