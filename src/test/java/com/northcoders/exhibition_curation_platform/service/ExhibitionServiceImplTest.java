@@ -161,5 +161,23 @@ public class ExhibitionServiceImplTest {
                     .isExactlyInstanceOf(ItemNotFoundException.class)
                     .hasMessage("The exhibition with id '2' cannot be found");
         }
+
+        @Test
+        @DisplayName("Should update name successfully when ID is valid")
+        void validId () throws Exception{
+            Exhibition exhibition = Exhibition.builder()
+                    .name("monet").build();
+            when(mockExhibitionRepository.findById(1L)).thenReturn(Optional.of(exhibition));
+            when(mockExhibitionRepository.save(any(Exhibition.class)))
+                    .thenAnswer(invocation -> invocation.getArgument(0));
+
+            Exhibition actual = exhibitionServiceImp.updateExhibitionNameById(1L, "new");
+            assertThat(actual).isNotNull();
+            assertThat(actual.getName()).isEqualTo("New Name");
+
+            verify(mockExhibitionRepository, times(1)).findById(1L);
+            verify(mockExhibitionRepository, times(1)).save(exhibition);
+        }
+
     }
 }
