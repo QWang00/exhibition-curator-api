@@ -41,5 +41,37 @@ public class ExhibitionServiceImplTest {
             assertThat(actual).isEmpty();
             assertThat(actual).isEqualTo(exhibitions);
         }
+
+        @Test
+        @DisplayName("Should return a list with one exhibition when there is only one")
+            void oneArtwork () throws Exception {
+            List<Exhibition> exhibitions = List.of(
+                    Exhibition.builder()
+                            .name("Monet")
+                            .build()
+            );
+            when(mockExhibitionRepository.findAll()).thenReturn(exhibitions);
+            List<Exhibition> actual = exhibitionServiceImp.getAllExhibitions();
+            assertThat(actual).hasSize(1);
+            assertThat(actual).isEqualTo(exhibitions);
+        }
+
+        @Test
+        @DisplayName("Should return a list with multiple exhibitions when there are multiple")
+        void multiArtwork () throws Exception {
+            List<Exhibition> exhibitions = List.of(
+                    Exhibition.builder()
+                            .name("Monet")
+                            .build(),
+                    Exhibition.builder()
+                            .name("Van")
+                            .build()
+            );
+            when(mockExhibitionRepository.findAll()).thenReturn(exhibitions);
+            List<Exhibition> actual = exhibitionServiceImp.getAllExhibitions();
+            assertThat(actual).hasSize(2);
+            assertThat(actual).isEqualTo(exhibitions);
+        }
+
     }
 }
