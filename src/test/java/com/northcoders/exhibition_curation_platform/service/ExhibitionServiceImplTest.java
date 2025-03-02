@@ -22,6 +22,13 @@ import static org.mockito.Mockito.*;
 @SpringBootTest
 @ExtendWith(MockitoExtension.class)
 public class ExhibitionServiceImplTest {
+
+    @Mock
+    private HarvardApiClient harvardApiClient;
+
+    @Mock
+    private ClevelandApiClient clevelandApiClient;
+
     @Mock
     private ExhibitionRepository mockExhibitionRepository;
 
@@ -195,6 +202,24 @@ public class ExhibitionServiceImplTest {
 
             verify(mockExhibitionRepository, times(1)).findById(1L);
             verify(mockExhibitionRepository, times(1)).save(exhibition);
+        }
+
+    }
+
+    @Nested
+    class FetchFromApi {
+
+        @Test
+        @DisplayName("Should throw exception when museum name is invalid")
+        void invalidMuseum () throws Exception {
+            Integer sourceId = 789;
+            String invalidMuseum = "Unknown";
+
+            assertThatThrownBy(() -> exhibitionServiceImp.fetchFromApi(sourceId, invalidMuseum))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessage("Invalid museum");
+
+            verifyNoInteractions(harvardApiClient, clevelandApiClient);
         }
 
     }
