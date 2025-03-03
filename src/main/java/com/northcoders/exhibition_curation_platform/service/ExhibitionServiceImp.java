@@ -44,46 +44,5 @@ public class ExhibitionServiceImp implements ExhibitionService {
                 .orElseThrow(() -> new ItemNotFoundException(String.format("The exhibition with id '%s' cannot be found", id)));
     }
 
-    public Exhibition createExhibition(String name) {
-        Exhibition exhibition = new Exhibition();
-        exhibition.setName(name);
-        return exhibitionRepository.save(exhibition);
-    }
 
-    public Exhibition updateExhibitionNameById(Long exhibitionId, String newName) {
-        Exhibition exhibition = getExhibitionById(exhibitionId);
-        exhibition.setName(newName);
-        return exhibitionRepository.save(exhibition);
-    }
-
-    public Exhibition addArtworkToExhibition(Long exhibitionId, Integer sourceId, String museum) {
-        Exhibition exhibition = getExhibitionById(exhibitionId);
-
-        Artwork artwork = artworkRepository.findBySourceArtworkIdAndMuseumName(sourceId, museum)
-                .orElseGet(() -> {
-                    Artwork newArtwork = fetchFromApi(sourceId, museum);
-                    return artworkRepository.save(newArtwork);
-                });
-
-        exhibition.addArtwork(artwork);
-        return exhibitionRepository.save(exhibition);
-    }
-
-    public Exhibition removeArtworkFromExhibition(Long exhibitionId, Long artworkId) {
-        Exhibition exhibition = getExhibitionById(exhibitionId);
-
-        Artwork artwork = artworkRepository.findById(artworkId)
-                .orElseThrow(() -> new ItemNotFoundException(String.format("The artwork with id '%s' cannot be found", artworkId)));
-
-        exhibition.removeArtwork(artwork);
-        return exhibitionRepository.save(exhibition);
-    }
-
-    public Artwork fetchFromApi(Integer sourceId, String museum) {
-        return switch (museum) {
-            case "Harvard Art Museum" -> harvardApiClient.fetchArtworkDetail(sourceId);
-            case "The Cleveland Museum of Art" -> clevelandApiClient.fetchArtworkDetail(sourceId);
-            default -> throw new IllegalArgumentException("Invalid museum");
-        };
-    }
 }
