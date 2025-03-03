@@ -396,6 +396,23 @@ public class ExhibitionServiceImplTest {
             verify(mockExhibitionRepository, never()).save(any());
         }
 
+        @Test
+        @DisplayName("Throw exception when exhibition not found")
+        void removeArtworkFromExhibition_ExhibitionNotFound() {
+            // Arrange
+            Long exhibitionId = 1L;
+            Long artworkId = 2L;
+
+            when(mockExhibitionRepository.findById(exhibitionId)).thenReturn(Optional.empty());
+
+            // Act & Assert
+            assertThrows(ItemNotFoundException.class, () ->
+                    exhibitionServiceImp.removeArtworkFromExhibition(exhibitionId, artworkId)
+            );
+            verify(mockArtworkRepository, never()).findById(any());
+            verify(mockExhibitionRepository, never()).save(any());
+        }
+
 
     }
 
