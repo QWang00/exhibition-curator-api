@@ -140,5 +140,28 @@ class ExhibitionControllerTest {
         }
     }
 
+    @Nested
+    class AddArtworkToExhibition {
+        @Test
+        @DisplayName("Should add artwork and return 200 OK")
+        void addArtworkSuccessfully() throws Exception {
+            Exhibition exhibition = Exhibition.builder().id(1L).build();
+            when(exhibitionService.addArtworkToExhibition(1L, 100, "Louvre")).thenReturn(exhibition);
+
+            mockMvc.perform(post("/api/v1/exhibition/1/artworks")
+                            .param("sourceArtworkId", "100")
+                            .param("museum", "Louvre"))
+                    .andExpect(status().isOk());
+        }
+
+        @Test
+        void addArtworkWithInvalidSourceId() throws Exception {
+            mockMvc.perform(post("/api/v1/exhibition/1/artworks")
+                            .param("sourceArtworkId", "invalid")
+                            .param("museum", "Louvre"))
+                    .andExpect(status().isBadRequest());
+        }
+    }
+
 
 }
