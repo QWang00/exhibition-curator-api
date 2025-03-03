@@ -14,9 +14,9 @@ public interface ExhibitionService {
 
     Exhibition updateExhibitionNameById(Long exhibitionId, String newName);
 
-    Exhibition addArtworkToExhibition(Long exhibitionId, Integer sourceId, String museum);
+    Exhibition addArtworkToExhibition(Long exhibitionId, String sourceId, String museum);
 
     Exhibition removeArtworkFromExhibition(Long exhibitionId, Long artworkId);
 
-    Artwork fetchFromApi(Integer sourceId, String museum);
+    Artwork fetchFromApi(String sourceId, String museum);
 }

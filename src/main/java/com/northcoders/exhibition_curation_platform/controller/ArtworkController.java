@@ -52,7 +52,7 @@ public class ArtworkController {
 
     @GetMapping("/{museum}/artwork/{sourceId}")
     public ResponseEntity<Artwork> getArtworkDetails(
-            @PathVariable int sourceId,
+            @PathVariable String sourceId,
             @PathVariable String museum
     ){
         Map<String, String> museumMap = Map.of(

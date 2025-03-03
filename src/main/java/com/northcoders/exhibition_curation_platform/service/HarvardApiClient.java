@@ -60,7 +60,7 @@ public class HarvardApiClient {
 
     }
 
-    public Artwork fetchArtworkDetail (int id){
+    public Artwork fetchArtworkDetail (String id){
         String url = BASE_URL +
                 "/" + id +
                 "?apikey=" + ApiKeyManager.getHAMApiKey();
@@ -88,7 +88,7 @@ public class HarvardApiClient {
         artwork.setTitle((String) artworkData.get("title"));
         artwork.setImageUrl((String) artworkData.get("primaryimageurl"));
         artwork.setYearMade((String) artworkData.get("dated"));
-        artwork.setSourceArtworkId((Integer) artworkData.get("id"));
+        artwork.setSourceArtworkId((String.valueOf(artworkData.get("id"))) );
 
         setArtistInfo(artworkData, artwork);
         generatePreview(artwork);

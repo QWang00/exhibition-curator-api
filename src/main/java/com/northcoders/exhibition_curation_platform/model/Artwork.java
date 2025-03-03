@@ -22,7 +22,7 @@ public class Artwork {
 
     @NotNull
     @Column(nullable = false)
-    private int sourceArtworkId;
+    private String sourceArtworkId;
 
     @NotNull
     @Column(nullable = false)

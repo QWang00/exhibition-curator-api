@@ -96,7 +96,7 @@ class ArtworkServiceImplTest {
                     .museumName("Harvard")
                     .build();
             IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-                    () -> artworkService.getArtworkDetails(1230, "Harvard"));
+                    () -> artworkService.getArtworkDetails("1230", "Harvard"));
             assertThat(exception.getMessage()).isEqualTo("Invalid museum source: Harvard");
         }
 
@@ -110,13 +110,13 @@ class ArtworkServiceImplTest {
                     .artist("artist")
                     .artistActiveYear("1900-1980")
                     .museumName("Harvard Art Museum")
-                    .sourceArtworkId(1234)
+                    .sourceArtworkId("1234")
                     .build();
-            when(harvardApiClient.fetchArtworkDetail(1234))
+            when(harvardApiClient.fetchArtworkDetail("1234"))
                     .thenReturn(existingArtwork);
-            Artwork artwork = artworkService.getArtworkDetails(1234, "Harvard Art Museum");
+            Artwork artwork = artworkService.getArtworkDetails("1234", "Harvard Art Museum");
             assertThat(artwork).isEqualTo(existingArtwork);
-            verify(harvardApiClient).fetchArtworkDetail(1234);
+            verify(harvardApiClient).fetchArtworkDetail("1234");
         }
 
         @Test
@@ -129,13 +129,13 @@ class ArtworkServiceImplTest {
                     .artist("artist")
                     .artistActiveYear("1900-1980")
                     .museumName("The Cleveland Museum of Art")
-                    .sourceArtworkId(1234)
+                    .sourceArtworkId("1234")
                     .build();
-            when(clevelandApiClient.fetchArtworkDetail(1234))
+            when(clevelandApiClient.fetchArtworkDetail("1234"))
                     .thenReturn(existingArtwork);
-            Artwork artwork = artworkService.getArtworkDetails(1234, "The Cleveland Museum of Art");
+            Artwork artwork = artworkService.getArtworkDetails("1234", "The Cleveland Museum of Art");
             assertThat(artwork).isEqualTo(existingArtwork);
-            verify(clevelandApiClient).fetchArtworkDetail(1234);
+            verify(clevelandApiClient).fetchArtworkDetail("1234");
         }
     }
 }

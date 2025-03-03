@@ -41,7 +41,7 @@ public class ExhibitionController {
     @PostMapping("exhibition/{id}/artworks")
     public ResponseEntity<Exhibition> addArtwork(
             @PathVariable Long id,
-            @RequestParam Integer sourceArtworkId,
+            @RequestParam String sourceArtworkId,
             @RequestParam String museum
     ) {
         return new ResponseEntity<Exhibition> (exhibitionService.addArtworkToExhibition(id, sourceArtworkId, museum), HttpStatus.OK);

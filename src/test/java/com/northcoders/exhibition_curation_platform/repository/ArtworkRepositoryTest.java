@@ -24,13 +24,13 @@ public class ArtworkRepositoryTest {
         @DisplayName("Should return valid artwork when parameters are valid")
         void validParameters () throws Exception {
             Artwork artwork = Artwork.builder()
-                    .sourceArtworkId(100)
+                    .sourceArtworkId("100")
                     .museumName("Harvard Art Museum")
                     .imageUrl("image")
                     .build();
             artworkRepository.save(artwork);
 
-            Optional<Artwork> artworkFound = artworkRepository.findBySourceArtworkIdAndMuseumName(100, "Harvard Art Museum");
+            Optional<Artwork> artworkFound = artworkRepository.findBySourceArtworkIdAndMuseumName("100", "Harvard Art Museum");
             assertTrue(artworkFound.isPresent());
             assertEquals(100, artworkFound.get().getSourceArtworkId());
             assertEquals("Harvard Art Museum", artworkFound.get().getMuseumName());
@@ -40,7 +40,7 @@ public class ArtworkRepositoryTest {
         @DisplayName("Should return empty artwork when sourceId is invalid")
         void findBySourceArtworkIdAndMuseumName_InvalidSourceId_ReturnsEmpty() {
             Optional<Artwork> foundArtwork = artworkRepository
-                    .findBySourceArtworkIdAndMuseumName(999, "Louvre");
+                    .findBySourceArtworkIdAndMuseumName("999", "Louvre");
 
             assertTrue(foundArtwork.isEmpty());
         }
@@ -49,7 +49,7 @@ public class ArtworkRepositoryTest {
         @DisplayName("Should return empty artwork when museum name is invalid")
         void findBySourceArtworkIdAndMuseumName_InvalidMuseum_ReturnsEmpty() {
             Optional<Artwork> foundArtwork = artworkRepository
-                    .findBySourceArtworkIdAndMuseumName(100, "Invalid Museum");
+                    .findBySourceArtworkIdAndMuseumName("100", "Invalid Museum");
 
             assertTrue(foundArtwork.isEmpty());
         }

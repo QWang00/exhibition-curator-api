@@ -7,5 +7,5 @@ import java.util.Optional;
 
 @Repository
 public interface ArtworkRepository extends CrudRepository<Artwork,Long> {
-    Optional<Artwork> findBySourceArtworkIdAndMuseumName(Integer sourceArtworkId, String museumName);
+    Optional<Artwork> findBySourceArtworkIdAndMuseumName(String sourceArtworkId, String museumName);
 }

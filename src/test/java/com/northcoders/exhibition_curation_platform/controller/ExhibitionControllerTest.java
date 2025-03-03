@@ -146,7 +146,7 @@ class ExhibitionControllerTest {
         @DisplayName("Should add artwork and return 200 OK")
         void addArtworkSuccessfully() throws Exception {
             Exhibition exhibition = Exhibition.builder().id(1L).build();
-            when(exhibitionService.addArtworkToExhibition(1L, 100, "Louvre")).thenReturn(exhibition);
+            when(exhibitionService.addArtworkToExhibition(1L, "100", "Louvre")).thenReturn(exhibition);
 
             mockMvc.perform(post("/api/v1/exhibition/1/artworks")
                             .param("sourceArtworkId", "100")

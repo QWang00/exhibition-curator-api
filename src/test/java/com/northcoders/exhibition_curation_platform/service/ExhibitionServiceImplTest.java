@@ -211,7 +211,7 @@ public class ExhibitionServiceImplTest {
         @Test
         @DisplayName("Should throw exception when museum name is invalid")
         void invalidMuseum () throws Exception {
-            Integer sourceId = 789;
+            String sourceId = "789";
             String invalidMuseum = "Unknown";
 
             assertThatThrownBy(() -> exhibitionServiceImp.fetchFromApi(sourceId, invalidMuseum))
@@ -226,18 +226,18 @@ public class ExhibitionServiceImplTest {
         void fetchFromClevelandMuseum() {
             Artwork expectedArtwork = Artwork.builder()
                     .museumName("The Cleveland Museum of Art")
-                    .sourceArtworkId(123)
+                    .sourceArtworkId("123")
                     .title("The Starry Night")
                     .build();
 
-            when(clevelandApiClient.fetchArtworkDetail(123)).thenReturn(expectedArtwork);
+            when(clevelandApiClient.fetchArtworkDetail("123")).thenReturn(expectedArtwork);
 
-            Artwork actualArtwork = exhibitionServiceImp.fetchFromApi(123, "The Cleveland Museum of Art");
+            Artwork actualArtwork = exhibitionServiceImp.fetchFromApi("123", "The Cleveland Museum of Art");
 
             assertThat(actualArtwork).isNotNull();
             assertThat(actualArtwork.getTitle()).isEqualTo("The Starry Night");
 
-            verify(clevelandApiClient, times(1)).fetchArtworkDetail(123);
+            verify(clevelandApiClient, times(1)).fetchArtworkDetail("123");
             verifyNoInteractions(harvardApiClient);
         }
 
@@ -246,18 +246,18 @@ public class ExhibitionServiceImplTest {
         void fetchFromHarvardMuseum() {
             Artwork expectedArtwork = Artwork.builder()
                     .museumName("Harvard Art Museum")
-                    .sourceArtworkId(123)
+                    .sourceArtworkId("123")
                     .title("The Starry Night")
                     .build();
 
-            when(harvardApiClient.fetchArtworkDetail(123)).thenReturn(expectedArtwork);
+            when(harvardApiClient.fetchArtworkDetail("123")).thenReturn(expectedArtwork);
 
-            Artwork actualArtwork = exhibitionServiceImp.fetchFromApi(123, "Harvard Art Museum");
+            Artwork actualArtwork = exhibitionServiceImp.fetchFromApi("123", "Harvard Art Museum");
 
             assertThat(actualArtwork).isNotNull();
             assertThat(actualArtwork.getTitle()).isEqualTo("The Starry Night");
 
-            verify(harvardApiClient, times(1)).fetchArtworkDetail(123);
+            verify(harvardApiClient, times(1)).fetchArtworkDetail("123");
             verifyNoInteractions(clevelandApiClient);
         }
 
@@ -269,13 +269,13 @@ public class ExhibitionServiceImplTest {
         @DisplayName("Should throw exception when exhibition id is invalid")
         void invalidExhibitionId () throws Exception {
             when (mockExhibitionRepository.findById(1L)).thenReturn(Optional.empty());
-            assertThrows(ItemNotFoundException.class, () -> exhibitionServiceImp.addArtworkToExhibition(1L,100, "Harvard Art Museum"));
+            assertThrows(ItemNotFoundException.class, () -> exhibitionServiceImp.addArtworkToExhibition(1L,"100", "Harvard Art Museum"));
         }
 
         @Test
         @DisplayName("Should not add existing Artwork when artwork is in Database")
         void existingArtwork() {
-            Integer sourceId = 100;
+            String sourceId = "100";
             String museum = "The Cleveland Museum of Art";
             Artwork existingArtwork = Artwork.builder()
                     .sourceArtworkId(sourceId)
@@ -308,7 +308,7 @@ public class ExhibitionServiceImplTest {
         @DisplayName("Should add new artwork when artwork is not in database")
         void newArtwork() {
 
-            Integer sourceId = 100;
+            String sourceId = "100";
             String museum = "The Cleveland Museum of Art";
 
             Artwork newArtwork = Artwork.builder()

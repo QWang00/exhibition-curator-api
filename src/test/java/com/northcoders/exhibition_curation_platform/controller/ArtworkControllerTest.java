@@ -50,7 +50,7 @@ class ArtworkControllerTest {
             .culture("culture1")
             .artistActiveYear("artist year 1")
             .museumName("Harvard Art Museum")
-            .sourceArtworkId(1234)
+            .sourceArtworkId("1234")
             .preview("preview1")
             .description("description1")
             .build();
@@ -62,7 +62,7 @@ class ArtworkControllerTest {
     Artwork clevelandArtwork1 = Artwork.builder()
             .artist("artist2")
             .tombstone("keyword, yearMade3, artist3, artistCulture3, artistActive3")
-            .sourceArtworkId(1234)
+            .sourceArtworkId("1234")
             .museumName("The Cleveland Museum of Art")
             .description("description3")
             .preview("preview3")
@@ -225,7 +225,7 @@ class ArtworkControllerTest {
         @Test
         @DisplayName("should return valid artwork for valid Harvard source id")
         public void harvardValidId() throws Exception {
-            Mockito.when(artworkService.getArtworkDetails(1234, "Harvard Art Museum"))
+            Mockito.when(artworkService.getArtworkDetails("1234", "Harvard Art Museum"))
                     .thenReturn(harvardArtwork1);
 
             mockMvcController.perform(get(BASE_URL+ "/harvard/artwork/1234"))
@@ -244,7 +244,7 @@ class ArtworkControllerTest {
         @Test
         @DisplayName("should return valid artwork for valid Harvard source id")
         public void ClevelandValidId() throws Exception {
-            Mockito.when(artworkService.getArtworkDetails(1234, "The Cleveland Museum of Art"))
+            Mockito.when(artworkService.getArtworkDetails("1234", "The Cleveland Museum of Art"))
                     .thenReturn(clevelandArtwork1);
 
             mockMvcController.perform(get(BASE_URL+ "/cleveland/artwork/1234"))
@@ -259,7 +259,7 @@ class ArtworkControllerTest {
         @Test
         @DisplayName("Should return valid response for both lowercase & uppercase of museum name")
         void caseInsensitiveMuseumName () throws Exception {
-            Mockito.when(artworkService.getArtworkDetails(1234, "The Cleveland Museum of Art"))
+            Mockito.when(artworkService.getArtworkDetails("1234", "The Cleveland Museum of Art"))
                     .thenReturn(clevelandArtwork1);
             mockMvcController.perform(get(BASE_URL+ "/CLEVELAND/artwork/1234"))
                     .andExpect(status().isOk())

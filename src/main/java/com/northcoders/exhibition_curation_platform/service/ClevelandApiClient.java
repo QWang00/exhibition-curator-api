@@ -54,7 +54,7 @@ public class ClevelandApiClient {
                 .collect(Collectors.toList());
     }
 
-    public Artwork fetchArtworkDetail(int id) {
+    public Artwork fetchArtworkDetail(String id) {
         String url = BASE_URL + "/artworks/" + id + "?fields=description,tombstone,images";
         Map<String, Object> response = restTemplate.getForObject(url, Map.class);
 

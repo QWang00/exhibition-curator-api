@@ -56,7 +56,7 @@ public class ExhibitionServiceImp implements ExhibitionService {
         return exhibitionRepository.save(exhibition);
     }
 
-    public Exhibition addArtworkToExhibition(Long exhibitionId, Integer sourceId, String museum) {
+    public Exhibition addArtworkToExhibition(Long exhibitionId, String sourceId, String museum) {
         Exhibition exhibition = getExhibitionById(exhibitionId);
 
         Artwork artwork = artworkRepository.findBySourceArtworkIdAndMuseumName(sourceId, museum)
@@ -79,7 +79,7 @@ public class ExhibitionServiceImp implements ExhibitionService {
         return exhibitionRepository.save(exhibition);
     }
 
-    public Artwork fetchFromApi(Integer sourceId, String museum) {
+    public Artwork fetchFromApi(String sourceId, String museum) {
         return switch (museum) {
             case "Harvard Art Museum" -> harvardApiClient.fetchArtworkDetail(sourceId);
             case "The Cleveland Museum of Art" -> clevelandApiClient.fetchArtworkDetail(sourceId);
