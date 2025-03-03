@@ -343,4 +343,42 @@ public class ExhibitionServiceImplTest {
 
 
     }
+
+    @Nested
+    class RemoveArtworkFromExhibition {
+        @Test
+        @DisplayName("Successfully remove artwork from exhibition")
+        void removeArtworkFromExhibition_Success() {
+            Long exhibitionId = 1L;
+            Long artworkId = 2L;
+
+            Exhibition exhibition = Exhibition.builder()
+                    .id(exhibitionId)
+                    .artworks(new HashSet<>())
+                    .build();
+
+            Artwork artwork = Artwork.builder()
+                    .id(artworkId)
+                    .exhibitions(new HashSet<>())
+                    .build();
+
+            exhibition.getArtworks().add(artwork);
+            artwork.getExhibitions().add(exhibition);
+
+            when(mockExhibitionRepository.findById(exhibitionId)).thenReturn(Optional.of(exhibition));
+            when(mockArtworkRepository.findById(artworkId)).thenReturn(Optional.of(artwork));
+            when(mockExhibitionRepository.save(exhibition)).thenReturn(exhibition);
+
+            // Act
+            Exhibition result = exhibitionServiceImp.removeArtworkFromExhibition(exhibitionId, artworkId);
+
+            // Assert
+            assertFalse(result.getArtworks().contains(artwork));
+            assertFalse(artwork.getExhibitions().contains(exhibition));
+            verify(mockExhibitionRepository).save(exhibition);
+        }
+
+
+    }
+
 }
