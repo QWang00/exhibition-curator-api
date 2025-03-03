@@ -1,5 +1,6 @@
 package com.northcoders.exhibition_curation_platform.service;
 
+import com.northcoders.exhibition_curation_platform.model.Artwork;
 import com.northcoders.exhibition_curation_platform.model.Exhibition;
 import java.util.List;
 
@@ -17,4 +18,5 @@ public interface ExhibitionService {
 
     Exhibition removeArtworkFromExhibition(Long exhibitionId, Long artworkId);
 
+    Artwork fetchFromApi(Integer sourceId, String museum);
 }
