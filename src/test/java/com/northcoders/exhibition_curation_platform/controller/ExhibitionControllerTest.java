@@ -114,5 +114,31 @@ class ExhibitionControllerTest {
         }
     }
 
+    @Nested
+    class UpdateExhibitionName {
+        @Test
+        @DisplayName("Should update name and return 200 OK")
+        void updateNameSuccessfully() throws Exception {
+            Exhibition updated = Exhibition.builder().id(1L).name("New Name").build();
+            when(exhibitionService.updateExhibitionNameById(1L, "New Name")).thenReturn(updated);
+
+            mockMvc.perform(put("/api/v1/exhibition/1/name")
+                            .param("newName", "New Name"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.name").value("New Name"));
+        }
+
+        @Test
+        @DisplayName("Should return 404 Not Found when invalid ID")
+        void updateNameWithInvalidId() throws Exception {
+            when(exhibitionService.updateExhibitionNameById(999L, "New Name"))
+                    .thenThrow(new ItemNotFoundException("Exhibition not found"));
+
+            mockMvc.perform(put("/api/v1/exhibition/999/name")
+                            .param("newName", "New Name"))
+                    .andExpect(status().isNotFound());
+        }
+    }
+
 
 }
