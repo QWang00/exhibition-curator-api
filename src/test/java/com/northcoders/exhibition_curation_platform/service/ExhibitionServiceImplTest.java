@@ -11,16 +11,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
-@SpringBootTest
 @ExtendWith(MockitoExtension.class)
 public class ExhibitionServiceImplTest {
 
@@ -36,8 +34,6 @@ public class ExhibitionServiceImplTest {
     @InjectMocks
     private ExhibitionServiceImp exhibitionServiceImp;
 
-    @Autowired
-    private ExhibitionRepository exhibitionRepository;
 
     @Nested
     class GetAllExhibitions{
@@ -127,9 +123,9 @@ public class ExhibitionServiceImplTest {
             Exhibition exhibition = Exhibition.builder()
                     .name("Monet")
                     .build();
-            when(mockExhibitionRepository.save(exhibition)).thenReturn(exhibition);
+            when(mockExhibitionRepository.save(any(Exhibition.class))).thenReturn(exhibition);
             Exhibition actual = exhibitionServiceImp.createExhibition("Monet");
-            assertThat(actual.getName()).isEqualTo("Impressionist Art");
+            assertThat(actual.getName()).isEqualTo("Monet");
             verify(mockExhibitionRepository, times(1)).save(any(Exhibition.class));
         }
 
@@ -181,7 +177,7 @@ public class ExhibitionServiceImplTest {
 
             Exhibition actual = exhibitionServiceImp.updateExhibitionNameById(1L, "new");
             assertThat(actual).isNotNull();
-            assertThat(actual.getName()).isEqualTo("New Name");
+            assertThat(actual.getName()).isEqualTo("new");
 
             verify(mockExhibitionRepository, times(1)).findById(1L);
             verify(mockExhibitionRepository, times(1)).save(exhibition);
@@ -247,20 +243,31 @@ public class ExhibitionServiceImplTest {
         @DisplayName("Should fetch artwork from The Harvard Museum of Art")
         void fetchFromHarvardMuseum() {
             Artwork expectedArtwork = Artwork.builder()
-                    .museumName("The Cleveland Museum of Art")
+                    .museumName("Harvard Art Museum")
                     .sourceArtworkId(123)
                     .title("The Starry Night")
                     .build();
 
             when(harvardApiClient.fetchArtworkDetail(123)).thenReturn(expectedArtwork);
 
-            Artwork actualArtwork = exhibitionServiceImp.fetchFromApi(123, "Harvard Museum Art");
+            Artwork actualArtwork = exhibitionServiceImp.fetchFromApi(123, "Harvard Art Museum");
 
             assertThat(actualArtwork).isNotNull();
             assertThat(actualArtwork.getTitle()).isEqualTo("The Starry Night");
 
             verify(harvardApiClient, times(1)).fetchArtworkDetail(123);
             verifyNoInteractions(clevelandApiClient);
+        }
+
+    }
+
+    @Nested
+    class AddArtworkToExhibition {
+        @Test
+        @DisplayName("Should throw exception when exhibition id is invalid")
+        void invalidExhibitionId () throws Exception {
+            when (mockExhibitionRepository.findById(1L)).thenReturn(Optional.empty());
+            assertThrows(ItemNotFoundException.class, () -> exhibitionServiceImp.addArtworkToExhibition(1L,100, "Harvard Art Museum"));
         }
 
     }
