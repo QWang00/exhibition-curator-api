@@ -91,5 +91,28 @@ class ExhibitionControllerTest {
                     .andExpect(MockMvcResultMatchers.jsonPath("$").value("The exhibition with id 999 cannot be found"));        }
     }
 
+    @Nested
+    class CreateExhibition {
+        @Test
+        @DisplayName("Should create exhibition and return 201 Created")
+        void createExhibitionSuccessfully() throws Exception {
+            Exhibition created = Exhibition.builder().id(1L).name("Renaissance").build();
+            when(exhibitionService.createExhibition("Renaissance")).thenReturn(created);
+
+            mockMvc.perform(post("/api/v1/exhibitions")
+                            .param("name", "Renaissance"))
+                    .andExpect(status().isCreated())
+                    .andExpect(jsonPath("$.id").value(1))
+                    .andExpect(jsonPath("$.name").value("Renaissance"));
+        }
+
+        @Test
+        @DisplayName("Should return 400 Bad Request when missing name parameter")
+        void createExhibitionWithoutName() throws Exception {
+            mockMvc.perform(post("/api/v1/exhibitions"))
+                    .andExpect(status().isBadRequest());
+        }
+    }
+
 
 }
