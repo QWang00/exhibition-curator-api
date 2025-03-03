@@ -78,7 +78,7 @@ public class ClevelandApiClient {
 
     private Artwork mapToArtwork(Map<String, Object> response) {
         Artwork artwork = new Artwork();
-        artwork.setSourceArtworkId((Integer) response.get("id"));
+        artwork.setSourceArtworkId((String) response.get("accession_number"));
         artwork.setTombstone((String) response.get("tombstone"));
 
         mapCommonFields(response, artwork);
