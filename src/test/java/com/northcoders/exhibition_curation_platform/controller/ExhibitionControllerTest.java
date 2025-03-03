@@ -163,5 +163,25 @@ class ExhibitionControllerTest {
         }
     }
 
+    @Nested
+    class RemoveArtworkFromExhibition {
+        @Test
+        @DisplayName("Should remove artwork and return 204 No Content")
+        void removeArtworkSuccessfully() throws Exception {
+            mockMvc.perform(delete("/api/v1/exhibition/1/artworks/2"))
+                    .andExpect(status().isNoContent());
 
+            verify(exhibitionService).removeArtworkFromExhibition(1L, 2L);
+        }
+
+        @Test
+        @DisplayName("Should return 404 Not Found for invalid exhibition ID")
+        void removeArtworkWithInvalidExhibitionId() throws Exception {
+            doThrow(new ItemNotFoundException("Exhibition not found"))
+                    .when(exhibitionService).removeArtworkFromExhibition(999L, 2L);
+
+            mockMvc.perform(delete("/api/v1/exhibition/999/artworks/2"))
+                    .andExpect(status().isNotFound());
+        }
+    }
 }
