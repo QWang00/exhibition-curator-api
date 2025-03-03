@@ -304,6 +304,42 @@ public class ExhibitionServiceImplTest {
             verify(mockExhibitionRepository).save(exhibition);
         }
 
+        @Test
+        @DisplayName("Should add new artwork when artwork is not in database")
+        void newArtwork() {
+
+            Integer sourceId = 100;
+            String museum = "The Cleveland Museum of Art";
+
+            Artwork newArtwork = Artwork.builder()
+                    .sourceArtworkId(sourceId)
+                    .museumName(museum)
+                    .exhibitions(new HashSet<>())
+                    .build();
+
+            when(clevelandApiClient.fetchArtworkDetail(sourceId)).thenReturn(newArtwork);
+
+            Long exhibitionId = 1L;
+            Exhibition exhibition = Exhibition.builder()
+                    .id(exhibitionId)
+                    .artworks(new HashSet<>())
+                    .build();
+
+            when(mockExhibitionRepository.findById(exhibitionId)).thenReturn(Optional.of(exhibition));
+            when(mockArtworkRepository.findBySourceArtworkIdAndMuseumName(sourceId, museum))
+                    .thenReturn(Optional.empty());
+            when(mockArtworkRepository.save(any(Artwork.class)))
+                    .thenReturn(newArtwork);
+            when(mockExhibitionRepository.save(exhibition)).thenReturn(exhibition);
+
+            Exhibition result = exhibitionServiceImp.addArtworkToExhibition(exhibitionId, sourceId, museum);
+
+            verify(mockArtworkRepository).save(any(Artwork.class));
+            verify(mockExhibitionRepository).save(exhibition);
+
+            assertTrue(result.getArtworks().contains(newArtwork));
+        }
+
 
 
     }
