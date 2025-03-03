@@ -32,7 +32,7 @@ public class ArtworkRepositoryTest {
 
             Optional<Artwork> artworkFound = artworkRepository.findBySourceArtworkIdAndMuseumName("100", "Harvard Art Museum");
             assertTrue(artworkFound.isPresent());
-            assertEquals(100, artworkFound.get().getSourceArtworkId());
+            assertEquals("100", artworkFound.get().getSourceArtworkId());
             assertEquals("Harvard Art Museum", artworkFound.get().getMuseumName());
         }
 

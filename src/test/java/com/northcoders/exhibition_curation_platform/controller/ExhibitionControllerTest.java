@@ -154,13 +154,6 @@ class ExhibitionControllerTest {
                     .andExpect(status().isOk());
         }
 
-        @Test
-        void addArtworkWithInvalidSourceId() throws Exception {
-            mockMvc.perform(post("/api/v1/exhibition/1/artworks")
-                            .param("sourceArtworkId", "invalid")
-                            .param("museum", "Louvre"))
-                    .andExpect(status().isBadRequest());
-        }
     }
 
     @Nested
