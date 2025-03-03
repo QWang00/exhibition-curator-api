@@ -3,6 +3,7 @@ package com.northcoders.exhibition_curation_platform.service;
 import com.northcoders.exhibition_curation_platform.exception.ItemNotFoundException;
 import com.northcoders.exhibition_curation_platform.model.Artwork;
 import com.northcoders.exhibition_curation_platform.model.Exhibition;
+import com.northcoders.exhibition_curation_platform.repository.ArtworkRepository;
 import com.northcoders.exhibition_curation_platform.repository.ExhibitionRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -11,12 +12,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -30,6 +29,9 @@ public class ExhibitionServiceImplTest {
 
     @Mock
     private ExhibitionRepository mockExhibitionRepository;
+
+    @Mock
+    private ArtworkRepository mockArtworkRepository;
 
     @InjectMocks
     private ExhibitionServiceImp exhibitionServiceImp;
@@ -269,6 +271,40 @@ public class ExhibitionServiceImplTest {
             when (mockExhibitionRepository.findById(1L)).thenReturn(Optional.empty());
             assertThrows(ItemNotFoundException.class, () -> exhibitionServiceImp.addArtworkToExhibition(1L,100, "Harvard Art Museum"));
         }
+
+        @Test
+        @DisplayName("Should not add existing Artwork when artwork is in Database")
+        void existingArtwork() {
+            Integer sourceId = 100;
+            String museum = "The Cleveland Museum of Art";
+            Artwork existingArtwork = Artwork.builder()
+                    .sourceArtworkId(sourceId)
+                    .museumName(museum)
+                    .exhibitions(new HashSet<>())
+                    .id(1L)
+                    .build();
+
+            Long exhibitionId = 1L;
+            Set<Artwork> artworks = new HashSet<>();
+            artworks.add(existingArtwork);
+            Exhibition exhibition = Exhibition.builder()
+                    .id(exhibitionId)
+                    .artworks(artworks)
+                    .build();
+
+            when(mockExhibitionRepository.findById(exhibitionId)).thenReturn(Optional.of(exhibition));
+            when(mockArtworkRepository.findBySourceArtworkIdAndMuseumName(sourceId, museum))
+                    .thenReturn(Optional.of(existingArtwork));
+            when(mockExhibitionRepository.save(exhibition)).thenReturn(exhibition);
+
+            Exhibition result = exhibitionServiceImp.addArtworkToExhibition(exhibitionId, sourceId, museum);
+
+            assertEquals(1, result.getArtworks().size());
+            verify(mockArtworkRepository, never()).save(any());
+            verify(mockExhibitionRepository).save(exhibition);
+        }
+
+
 
     }
 }
