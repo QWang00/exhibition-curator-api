@@ -35,6 +35,24 @@ public class ArtworkRepositoryTest {
             assertEquals(100, artworkFound.get().getSourceArtworkId());
             assertEquals("Harvard Art Museum", artworkFound.get().getMuseumName());
         }
+
+        @Test
+        @DisplayName("Should return empty artwork when sourceId is invalid")
+        void findBySourceArtworkIdAndMuseumName_InvalidSourceId_ReturnsEmpty() {
+            Optional<Artwork> foundArtwork = artworkRepository
+                    .findBySourceArtworkIdAndMuseumName(999, "Louvre");
+
+            assertTrue(foundArtwork.isEmpty());
+        }
+
+        @Test
+        @DisplayName("Should return empty artwork when museum name is invalid")
+        void findBySourceArtworkIdAndMuseumName_InvalidMuseum_ReturnsEmpty() {
+            Optional<Artwork> foundArtwork = artworkRepository
+                    .findBySourceArtworkIdAndMuseumName(100, "Invalid Museum");
+
+            assertTrue(foundArtwork.isEmpty());
+        }
     }
 
 }
