@@ -15,17 +15,20 @@ import java.util.List;
 @Transactional
 public class ExhibitionServiceImp implements ExhibitionService {
 
-    @Autowired
-    ExhibitionRepository exhibitionRepository;
-
-    @Autowired
-    ArtworkRepository artworkRepository;
-
+    private final ExhibitionRepository exhibitionRepository;
+    private final ArtworkRepository artworkRepository;
     private final HarvardApiClient harvardApiClient;
     private final ClevelandApiClient clevelandApiClient;
 
     @Autowired
-    public ExhibitionServiceImp(HarvardApiClient harvardApiClient, ClevelandApiClient clevelandApiClient) {
+    public ExhibitionServiceImp(
+            ExhibitionRepository exhibitionRepository,
+            ArtworkRepository artworkRepository,
+            HarvardApiClient harvardApiClient,
+            ClevelandApiClient clevelandApiClient
+    ) {
+        this.exhibitionRepository = exhibitionRepository;
+        this.artworkRepository = artworkRepository;
         this.harvardApiClient = harvardApiClient;
         this.clevelandApiClient = clevelandApiClient;
     }
@@ -53,9 +56,22 @@ public class ExhibitionServiceImp implements ExhibitionService {
         return exhibitionRepository.save(exhibition);
     }
 
+    public Exhibition addArtworkToExhibition(Long exhibitionId, Integer sourceId, String museum) {
+        Exhibition exhibition = getExhibitionById(exhibitionId);
+
+        Artwork artwork = artworkRepository.findBySourceArtworkIdAndMuseumName(sourceId, museum)
+                .orElseGet(() -> {
+                    Artwork newArtwork = fetchFromApi(sourceId, museum);
+                    return artworkRepository.save(newArtwork);
+                });
+
+        exhibition.addArtwork(artwork);
+        return exhibitionRepository.save(exhibition);
+    }
 
 
-    protected Artwork fetchFromApi(Integer sourceId, String museum) {
+
+    public Artwork fetchFromApi(Integer sourceId, String museum) {
         return switch (museum) {
             case "Harvard Art Museum" -> harvardApiClient.fetchArtworkDetail(sourceId);
             case "The Cleveland Museum of Art" -> clevelandApiClient.fetchArtworkDetail(sourceId);
