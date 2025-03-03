@@ -66,5 +66,30 @@ class ExhibitionControllerTest {
         }
     }
 
+    @Nested
+    class GetExhibitionById {
+        @Test
+        @DisplayName("Should return exhibition and 200 OK when valid ID")
+        void getExhibitionWithValidId() throws Exception {
+            Exhibition exhibition = Exhibition.builder().id(1L).name("Classic Art").build();
+            when(exhibitionService.getExhibitionById(1L)).thenReturn(exhibition);
+
+            mockMvc.perform(get("/api/v1/exhibition/1"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.id").value(1))
+                    .andExpect(jsonPath("$.name").value("Classic Art"));
+        }
+
+        @Test
+        @DisplayName("Should return 404 Not Found when invalid ID")
+        void getExhibitionWithInvalidId() throws Exception {
+            when(exhibitionService.getExhibitionById(999L))
+                    .thenThrow(new ItemNotFoundException("The exhibition with id 999 cannot be found"));
+
+            mockMvc.perform(get("/api/v1/exhibition/999"))
+                    .andExpect(status().isNotFound())
+                    .andExpect(MockMvcResultMatchers.jsonPath("$").value("The exhibition with id 999 cannot be found"));        }
+    }
+
 
 }
