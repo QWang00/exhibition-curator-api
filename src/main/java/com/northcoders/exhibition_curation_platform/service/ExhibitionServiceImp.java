@@ -44,5 +44,11 @@ public class ExhibitionServiceImp implements ExhibitionService {
                 .orElseThrow(() -> new ItemNotFoundException(String.format("The exhibition with id '%s' cannot be found", id)));
     }
 
+    public Exhibition createExhibition(String name) {
+        Exhibition exhibition = new Exhibition();
+        exhibition.setName(name);
+        return exhibitionRepository.save(exhibition);
+    }
+
 
 }
