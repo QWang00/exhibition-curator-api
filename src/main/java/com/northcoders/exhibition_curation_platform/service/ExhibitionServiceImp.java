@@ -69,7 +69,15 @@ public class ExhibitionServiceImp implements ExhibitionService {
         return exhibitionRepository.save(exhibition);
     }
 
+    public Exhibition removeArtworkFromExhibition(Long exhibitionId, Long artworkId) {
+        Exhibition exhibition = getExhibitionById(exhibitionId);
 
+        Artwork artwork = artworkRepository.findById(artworkId)
+                .orElseThrow(() -> new ItemNotFoundException(String.format("The artwork with id '%s' cannot be found", artworkId)));
+
+        exhibition.removeArtwork(artwork);
+        return exhibitionRepository.save(exhibition);
+    }
 
     public Artwork fetchFromApi(Integer sourceId, String museum) {
         return switch (museum) {
