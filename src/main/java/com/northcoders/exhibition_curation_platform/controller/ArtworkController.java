@@ -2,22 +2,31 @@ package com.northcoders.exhibition_curation_platform.controller;
 
 import com.northcoders.exhibition_curation_platform.model.Artwork;
 import com.northcoders.exhibition_curation_platform.service.ArtworkService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1")
+@CacheConfig(cacheNames = "artworksCache")
+@Tag(name = "Artwork", description = "Artwork management APIs with caching")
 public class ArtworkController {
 
     @Autowired
     ArtworkService artworkService;
 
+    @Operation(description = "Retrieve a list of artworks based on keywords (cached)")
     @GetMapping("/search-results/{museum}")
+    @Cacheable
     public ResponseEntity<Map<String, Object>> getArtworks(
             @PathVariable String museum,
             @RequestParam (required = false) String keyword,
@@ -50,7 +59,9 @@ public class ArtworkController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(description = "Retrieve an artwork by its ID (cached)")
     @GetMapping("/{museum}/artwork/{sourceId}")
+    @Cacheable(key = "#sourceId")
     public ResponseEntity<Artwork> getArtworkDetails(
             @PathVariable String sourceId,
             @PathVariable String museum
