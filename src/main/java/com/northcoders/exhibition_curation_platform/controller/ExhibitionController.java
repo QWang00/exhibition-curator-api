@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -60,7 +61,14 @@ public class ExhibitionController {
             @RequestParam String sourceArtworkId,
             @RequestParam String museum
     ) {
-        return new ResponseEntity<Exhibition> (exhibitionService.addArtworkToExhibition(id, sourceArtworkId, museum), HttpStatus.OK);
+        Map<String, String> museumMap = Map.of(
+                "harvard", "Harvard Art Museum",
+                "cleveland", "The Cleveland Museum of Art"
+        );
+
+        String fullMuseumName = museumMap.get(museum.toLowerCase());
+
+        return new ResponseEntity<Exhibition> (exhibitionService.addArtworkToExhibition(id, sourceArtworkId, fullMuseumName), HttpStatus.OK);
     }
 
     @Operation(summary = "Remove an artwork from an exhibition", description = "remove an artwork from an exhibition")
