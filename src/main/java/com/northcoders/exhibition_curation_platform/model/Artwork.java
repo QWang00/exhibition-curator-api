@@ -47,6 +47,7 @@ public class Artwork {
     @Lob
     private String preview;
 
+    @Builder.Default
     @ManyToMany(mappedBy = "artworks")
     @JsonBackReference
     private Set<Exhibition> exhibitions = new HashSet<>();

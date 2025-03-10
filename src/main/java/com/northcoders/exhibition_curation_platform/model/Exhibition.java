@@ -24,14 +24,16 @@ public class Exhibition {
     @Column(nullable = false)
     private String name;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JsonManagedReference
     @JoinTable(
             name = "exhibition_artwork",
             joinColumns = @JoinColumn(name = "exhibition_id"),
             inverseJoinColumns = @JoinColumn(name = "artwork_id")
     )
+    @Builder.Default // <-- Ensures the field is initialized when using @Builder
     private Set<Artwork> artworks = new HashSet<>();
+
 
     public void addArtwork(Artwork artwork) {
         artworks.add(artwork);
