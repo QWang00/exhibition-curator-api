@@ -29,7 +29,6 @@ public class SeedService {
 
         artworks.forEach(artwork -> entityManager.merge(artwork));
         Set<Exhibition> exhibitions = SeedData.createExhibitions(artworks);
-)
         exhibitionRepo.saveAll(exhibitions);
     }
 }
