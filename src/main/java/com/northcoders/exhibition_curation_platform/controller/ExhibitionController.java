@@ -56,6 +56,7 @@ public class ExhibitionController {
 
     @Operation(summary = "Add an artwork into an exhibition", description = "Add an artwork into an exhibition with the provided details")
     @PostMapping("exhibition/{id}/artworks")
+    @CacheEvict(value = "exhibitionsCache", allEntries = true)
     public ResponseEntity<Exhibition> addArtwork(
             @PathVariable Long id,
             @RequestParam String sourceArtworkId,
@@ -67,12 +68,16 @@ public class ExhibitionController {
         );
 
         String fullMuseumName = museumMap.get(museum.toLowerCase());
+        if(fullMuseumName == null) {
+            return ResponseEntity.badRequest().body(null);
+        }
 
         return new ResponseEntity<Exhibition> (exhibitionService.addArtworkToExhibition(id, sourceArtworkId, fullMuseumName), HttpStatus.OK);
     }
 
     @Operation(summary = "Remove an artwork from an exhibition", description = "remove an artwork from an exhibition")
     @DeleteMapping("/exhibition/{exhibitionId}/artworks/{artworkId}")
+    @CacheEvict(value = "exhibitionsCache", allEntries = true)
     public ResponseEntity<Void> removeArtwork(
             @PathVariable Long exhibitionId,
             @PathVariable Long artworkId
