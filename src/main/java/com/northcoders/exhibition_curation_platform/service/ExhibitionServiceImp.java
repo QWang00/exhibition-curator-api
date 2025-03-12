@@ -86,4 +86,14 @@ public class ExhibitionServiceImp implements ExhibitionService {
             default -> throw new IllegalArgumentException("Invalid museum");
         };
     }
+
+    public Exhibition addArtworkToExhibitionFromLocal(Long exhibitionId, Long artworkId) {
+        Exhibition exhibition = getExhibitionById(exhibitionId);
+
+        Artwork artwork = artworkRepository.findById(artworkId)
+                .orElseThrow(() -> new ItemNotFoundException(String.format("The artwork with id '%s' cannot be found", artworkId)));
+
+        exhibition.addArtwork(artwork);
+        return exhibitionRepository.save(exhibition);
+    }
 }

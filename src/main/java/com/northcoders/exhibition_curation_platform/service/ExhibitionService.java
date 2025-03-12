@@ -19,4 +19,6 @@ public interface ExhibitionService {
     Exhibition removeArtworkFromExhibition(Long exhibitionId, Long artworkId);
 
     Artwork fetchFromApi(String sourceId, String museum);
+
+    Exhibition addArtworkToExhibitionFromLocal(Long exhibitionId, Long artworkId);
 }
