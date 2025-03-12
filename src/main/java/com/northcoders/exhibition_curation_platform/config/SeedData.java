@@ -11,36 +11,35 @@ public class SeedData {
         Set<Artwork> artworks = new HashSet<>();
         artworks.add(Artwork.builder()
                 .sourceArtworkId("1958.39")
-                .imageUrl("https://openaccess-cdn.clevelandart.org/1958.39/1958.39_print.jpg")
-                .museumName("The Cleveland Museum of Art")
                 .title("The Red Kerchief")
                 .yearMade("500 BC")
                 .artist("Unknown")
                 .culture("Greek")
                 .artistActiveYear("Ancient Period")
-                .description("An ancient Greek vase used for storing wine.")
                 .tombstone("Ancient Greek Vase, 500 BC, Ceramic")
-                .preview("Preview of an ancient Greek vase.")
+                .imageUrl("https://openaccess-cdn.clevelandart.org/1958.39/1958.39_print.jpg")
+                .museumName("cleveland")
+                .description("This painting depicts Monet's first wife, Camille, outside on a snowy day passing by the French doors of their home at Argenteuil. Her face is rendered in a radically bold Impressionist technique of mere daubs of paint quickly applied, just as the snow and trees are defined by broad, broken strokes of pure white and green.")
+                .preview("The Red Kerchief, c. 1868–73. Claude Monet (French, 1840–1926)")
                 .build());
 
         artworks.add(Artwork.builder()
                 .sourceArtworkId("231940")
                 .imageUrl("https://nrs.harvard.edu/urn-3:HUAM:797168")
-                .museumName("Harvard Art Museum")
+                .museumName("harvard")
                 .title("Mona Lisa")
                 .yearMade("1503")
                 .artist("Leonardo da Vinci")
                 .culture("Italian")
                 .artistActiveYear("Renaissance")
-                .description("A portrait of Lisa Gherardini, wife of Francesco del Giocondo.")
-                .tombstone("Mona Lisa by Leonardo da Vinci, 1503, Oil on wood")
-                .preview("Preview of the Mona Lisa.")
+                .description("We look down at two fish that have been laid on a crumpled white cloth on a pale yellow table or counter top. The fish lie diagonally, side by side, one with its head closer to us and its tail pointed up and to the right, and the other facing opposite, with its tail close by the head of the other fish and its head pointing away. They both have  shimmering coral pink and white skin and small orange tails and fins.")
+                .preview("Red Mullets, c. 1870. Claude Monet (French, 1840 - 1926).")
                 .build());
 
         return artworks;
     }
 
-    // In SeedData.java's createExhibitions method:
+
 
     public static Set<Exhibition> createExhibitions(Set<Artwork> artworks) {
         Set<Exhibition> exhibitions = new HashSet<>();
@@ -48,9 +47,9 @@ public class SeedData {
                 .name("Renaissance Art")
                 .build();
 
-        // Use the addArtwork method to manage both sides of the relationship
+
         for (Artwork artwork : artworks) {
-            exhibition.addArtwork(artwork); // <-- This ensures bidirectional sync
+            exhibition.addArtwork(artwork);
         }
 
         exhibitions.add(exhibition);
