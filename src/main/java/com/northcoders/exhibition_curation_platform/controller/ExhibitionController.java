@@ -54,7 +54,8 @@ public class ExhibitionController {
         return new ResponseEntity<Exhibition>(exhibitionService.updateExhibitionNameById(id, newName), HttpStatus.OK);
     }
 
-    @Operation(summary = "Add an artwork into an exhibition", description = "Add an artwork into an exhibition with the provided details")
+    @Operation(summary = "Add an artwork into an exhibition", description = "Add an artwork into an exhibition with the provided details. " +
+            "Note: The 'museum' parameter must be either 'cleveland' or 'harvard'.")
     @PostMapping("exhibition/{id}/artworks")
     @CacheEvict(value = "exhibitionsCache", allEntries = true)
     public ResponseEntity<Exhibition> addArtwork(

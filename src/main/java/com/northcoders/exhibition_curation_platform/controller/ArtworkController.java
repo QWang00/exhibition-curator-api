@@ -24,7 +24,8 @@ public class ArtworkController {
     @Autowired
     ArtworkService artworkService;
 
-    @Operation(summary = "Get all artworks by keyword, artist, and museum", description = "Retrieve a list of artworks based on keywords (cached)")
+    @Operation(summary = "Get all artworks by keyword, artist, and museum", description = "Retrieve a list of artworks based on keywords (cached)" +
+            "Note: The 'museum' parameter must be either 'cleveland' or 'harvard'.")
     @GetMapping("/search-results/{museum}")
     @Cacheable
     public ResponseEntity<Map<String, Object>> getArtworks(
@@ -59,7 +60,8 @@ public class ArtworkController {
         return ResponseEntity.ok(response);
     }
 
-    @Operation(summary = "Get artwork details using the artwork ID from its source museum", description = "Retrieve an artwork by its ID (cached)")
+    @Operation(summary = "Get artwork details using the artwork ID from its source museum", description = "Retrieve an artwork by its ID (cached)" +
+            "Note: The 'museum' parameter must be either 'cleveland' or 'harvard'.")
     @GetMapping("/{museum}/artwork/{sourceId}")
     @Cacheable(key = "#sourceId")
     public ResponseEntity<Artwork> getArtworkDetails(
