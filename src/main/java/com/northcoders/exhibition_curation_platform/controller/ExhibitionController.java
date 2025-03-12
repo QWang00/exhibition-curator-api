@@ -85,4 +85,15 @@ public class ExhibitionController {
         exhibitionService.removeArtworkFromExhibition(exhibitionId, artworkId);
         return ResponseEntity.noContent().build();
     }
+
+    @Operation(summary = "Add an artwork from local database into an exhibition", description = "Add an artwork from local database into an exhibition using its artworkId")
+    @PostMapping("exhibition/{id}/artworks/local")
+    @CacheEvict(value = "exhibitionsCache", allEntries = true)
+    public ResponseEntity<Exhibition> addArtworkFromLocal(
+            @PathVariable Long id,
+            @RequestParam Long artworkId
+    ) {
+        return new ResponseEntity<Exhibition>(exhibitionService.addArtworkToExhibitionFromLocal(id, artworkId), HttpStatus.OK);
+    }
+
 }
